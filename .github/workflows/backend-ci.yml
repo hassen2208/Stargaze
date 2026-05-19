@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - feature/docker_cicd_tests
 
   pull_request:
     branches:
