@@ -1,3 +1,15 @@
+import os
+
+os.environ["APP_NAME"] = "test"
+os.environ["APP_VERSION"] = "1.0"
+os.environ["DEBUG"] = "True"
+os.environ["API_PREFIX"] = "/api"
+os.environ["DATABASE_URL"] = "sqlite:///test.db"
+os.environ["GEMINI_API_KEY"] = "test"
+os.environ["DEEPGRAM_API_KEY"] = "test"
+os.environ["ELEVENLABS_API_KEY"] = "test"
+os.environ["FIREBASE_CREDENTIALS_PATH"] = "test"
+
 from unittest.mock import MagicMock, patch
 
 from app.modules.auth.service import AuthService
@@ -14,8 +26,7 @@ def test_sync_user_returns_existing_user():
     }
 
     existing_user = {
-        "id": 1,
-        "firebase_uid": "123"
+        "id": 1
     }
 
     with patch(
