@@ -40,3 +40,45 @@ def test_sync_user_returns_existing_user():
         )
 
         assert result == existing_user
+
+
+def test_sync_user_creates_user():
+
+    db = MagicMock()
+
+    firebase_data = {
+        "uid": "123",
+        "email": "test@test.com",
+        "name": "Mor"
+    }
+
+    created_user = {
+        "id": 1,
+        "firebase_uid": "123",
+        "email": "test@test.com",
+        "name": "Mor"
+    }
+
+    with patch(
+        "app.modules.auth.service.AuthRepository.get_user_by_uid",
+        return_value=None
+    ):
+
+        with patch(
+            "app.modules.auth.service.AuthRepository.create_user",
+            return_value=created_user
+        ) as mock_create:
+
+            result = AuthService.sync_user(
+                db,
+                firebase_data
+            )
+
+            mock_create.assert_called_once_with(
+                db=db,
+                firebase_uid="123",
+                email="test@test.com",
+                name="Mor"
+            )
+
+            assert result == created_user
