@@ -1,3 +1,5 @@
+import pytest
+
 from unittest.mock import (
     AsyncMock,
     MagicMock,
@@ -8,7 +10,7 @@ from app.modules.conversation.service import (
     ConversationService
 )
 
-
+@pytest.mark.asyncio
 async def test_process_message():
 
     db = MagicMock()
