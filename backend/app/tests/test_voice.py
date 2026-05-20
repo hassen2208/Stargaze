@@ -1,4 +1,6 @@
 import os
+import pytest
+
 from unittest.mock import (
     AsyncMock,
     MagicMock,
@@ -7,7 +9,7 @@ from unittest.mock import (
 
 from app.modules.voice.pipeline import VoicePipeline
 
-
+@pytest.mark.asyncio
 async def test_process_voice():
 
     db = MagicMock()
