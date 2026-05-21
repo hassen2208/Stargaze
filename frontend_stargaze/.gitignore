@@ -1,0 +1,112 @@
+# =========================
+# Logs
+# =========================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =========================
+# Dependencies
+# =========================
+node_modules
+
+# =========================
+# Build / Production
+# =========================
+dist
+dist-ssr
+build
+coverage
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Vite
+# =========================
+vite.config.ts.timestamp-*
+*.local
+
+# =========================
+# Cache
+# =========================
+.cache
+.parcel-cache
+.eslintcache
+.stylelintcache
+
+# =========================
+# Testing
+# =========================
+coverage/
+.nyc_output/
+
+# =========================
+# Docker
+# =========================
+.docker
+docker-compose.override.yml
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE / Editors
+# =========================
+.vscode/*
+!.vscode/extensions.json
+
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# Temporary files
+# =========================
+tmp
+temp
+*.tmp
+
+# =========================
+# Package managers
+# =========================
+.pnpm-store
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# =========================
+# Optional: Storybook
+# =========================
+storybook-static
+
+# =========================
+# Optional: Next.js
+# =========================
+.next
+
+# =========================
+# Optional: Nuxt
+# =========================
+.nuxt
