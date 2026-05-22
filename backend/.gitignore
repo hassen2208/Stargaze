@@ -3,6 +3,7 @@ __pycache__/
 .env
 
 firebase_credentials.json
+app/firebase/*.json
 
 *.pyc
 *.pyo
