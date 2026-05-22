@@ -110,3 +110,4 @@ storybook-static
 # Optional: Nuxt
 # =========================
 .nuxt
+serviceAccountKey.json
