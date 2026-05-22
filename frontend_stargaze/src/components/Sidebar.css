@@ -1,0 +1,113 @@
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255,255,255,0.03);
+  border-right: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 24px 12px;
+  position: relative;
+  z-index: 10;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 28px;
+}
+.sidebar-logo-icon {
+  font-size: 20px;
+  color: var(--purple-400);
+  filter: drop-shadow(0 0 8px var(--purple-400));
+}
+.sidebar-logo-text {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, var(--purple-300), var(--cyan-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all .2s;
+  position: relative;
+}
+.sidebar-item:hover {
+  background: rgba(139,92,246,0.1);
+  color: var(--purple-300);
+}
+.sidebar-item--active {
+  background: rgba(139,92,246,0.15);
+  color: var(--purple-300);
+  border: 1px solid rgba(139,92,246,0.25);
+}
+.sidebar-item--soon {
+  opacity: .45;
+  cursor: default;
+  pointer-events: none;
+}
+
+.sidebar-icon { font-size: 18px; flex-shrink: 0; }
+.sidebar-label { flex: 1; }
+.sidebar-soon-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: rgba(139,92,246,.2);
+  color: var(--purple-300);
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.sidebar-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple-500), var(--purple-400));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-user-name  { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.sidebar-user-role  { font-size: 11px; color: var(--text-muted); }
