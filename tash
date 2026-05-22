@@ -1,0 +1,10 @@
+[33mcommit eaa37fbc0acb1570e8ec394a170ef8825c2dd12f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/frontend[m[33m, [m[1;31morigin/feature/frontend[m[33m)[m
+Author: Wilson <wilson.martinez.rivera@correounivalle.edu.co>
+Date:   Fri May 22 12:18:46 2026 -0500
+
+    firebase en backend
+
+ backend/.gitignore           |  1 [32m+[m
+ backend/app/core/firebase.py | 20 [32m++++++++++++++++++++[m
+ backend/app/main.py          | 20 [32m+++++++++++++++++++[m[31m-[m
+ 3 files changed, 40 insertions(+), 1 deletion(-)

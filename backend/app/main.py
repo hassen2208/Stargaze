@@ -3,13 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.router import api_router
 from app.core.config import settings
-<<<<<<< Updated upstream
-
-from prometheus_fastapi_instrumentator import Instrumentator
-
-=======
 from app.core.firebase import *
->>>>>>> Stashed changes
 from app.core.database import Base, engine
 from app.models.user_model import User
 from app.models.task_model import Task
@@ -48,10 +42,4 @@ Instrumentator().instrument(app).expose(app)
 
 @app.get("/")
 def root():
-<<<<<<< Updated upstream
-    return {
-        "message": "Stargaze API Running"
-    }
-=======
     return {"message": "Stargaze API Running"}
->>>>>>> Stashed changes
