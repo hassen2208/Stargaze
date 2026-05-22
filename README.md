@@ -87,7 +87,7 @@ docker ps
 ## Estructura del Proyecto
 ```
 ├─ backend/         # Código de FastAPI
-├─ frontend/        # Código de React + Vite
+├─ Stargaze_frontend/        # Código de React + Vite
 ├─ db/              # Scripts de inicialización de PostgreSQL
 ├─ docker-compose.yml
 └─ README.md
