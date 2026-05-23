@@ -1,15 +1,14 @@
 import { initializeApp } from "firebase/app";
-
 import { getAuth } from "firebase/auth";
-const firebaseConfig ={
-  apiKey: "AIzaSyBAl22jHpW3e7zuxbx2YlwpcgadaD9gWuQ",
-  authDomain: "stargaze-7f6bf.firebaseapp.com",
-  projectId: "stargaze-7f6bf",
-  storageBucket: "stargaze-7f6bf.firebasestorage.app",
-  messagingSenderId: "489155776593",
-  appId: "1:489155776593:web:f1fa8a1e7605d406f62870"
+
+const firebaseConfig = {
+  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId:             import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
-
 export const auth = getAuth(app);
