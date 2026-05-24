@@ -1,7 +1,9 @@
 from fastapi import FastAPI
-
+import app.models
 from app.api.router import api_router
 from app.core.config import settings
+from app.core.database import Base, engine
+
 
 from prometheus_fastapi_instrumentator import Instrumentator
 
