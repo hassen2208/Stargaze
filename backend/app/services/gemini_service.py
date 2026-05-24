@@ -20,12 +20,12 @@ class GeminiService:
 
         response = model.generate_content(
             prompt,
-            generation_config={
-                "temperature": 0.2,
-                "top_p": 0.8,
-                "top_k": 20,
-                "max_output_tokens": 300
-            }
+            generation_config=genai.GenerationConfig(
+                temperature=0.2,
+                top_p=0.8,
+                top_k=20,
+                max_output_tokens=300,
+            ),
         )
 
-        return response.text
+        return response

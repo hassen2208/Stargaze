@@ -1,4 +1,4 @@
-import os
+
 
 from sqlalchemy.orm import Session
 
@@ -14,6 +14,18 @@ from app.modules.conversation.service import (
     ConversationService
 )
 
+import os
+import time
+
+from app.core.evaluation_metrics import (
+    api_cost_usd_total,
+    conversation_errors_total,
+    llm_tokens_total,
+    voice_pipeline_duration_seconds,
+    voice_pipeline_requests_total,
+    voice_transcription_duration_seconds,
+    voice_tts_duration_seconds,
+)
 
 class VoicePipeline:
 
@@ -23,47 +35,123 @@ class VoicePipeline:
         user_id: int,
         audio_path: str
     ):
+        total_start = time.perf_counter()
+        stage = "initialization"
 
-        print("1. Iniciando transcripción")
+        try:
+            print("1. Iniciando transcripción")
 
-        transcript = await STTService.transcribe_audio(
-            audio_path
-        )
+            stage = "transcription"
+            transcription_start = time.perf_counter()
 
-        print("2. Transcripción completada")
-        print("========== TRANSCRIPT ==========")
-        print(transcript)
-        print("================================")
+            try:
+                transcript = await STTService.transcribe_audio(audio_path)
+            finally:
+                transcription_time = time.perf_counter() - transcription_start
+                voice_transcription_duration_seconds.observe(transcription_time)
 
-        print("3. Enviando texto a Gemini")
 
-        ai_response = await ConversationService.process_message(
-            db,
-            user_id,
-            transcript
-        )
+            print("2. Transcripción completada")
+            print("========== TRANSCRIPT ==========")
+            print(transcript)
+            print("================================")
 
-        print("4. Gemini respondió")
-        print(ai_response)
+            print("3. Enviando texto a Gemini")
 
-        response_text = ai_response.get(
-            "message",
-            "Done."
-        )
+            stage = "conversation"
 
-        print("5. Generando audio TTS")
+            ai_response = await ConversationService.process_message(
+                db,
+                user_id,
+                transcript
+            )
 
-        generated_audio = await text_to_speech(
-            response_text
-        )
+            print("4. Gemini respondió")
+            print(ai_response)
 
-        print("6. Audio generado")
+          
+            usage = ai_response.get("usage") or ai_response.get("usage_metadata") or {}
 
-        if os.path.exists(audio_path):
-            os.remove(audio_path)
+            prompt_tokens = (
+                usage.get("prompt_tokens")
+                or usage.get("prompt_token_count")
+                or 0
+            )
 
-        return {
-            "transcript": transcript,
-            "response": ai_response,
-            "audio": generated_audio
-        }
+            completion_tokens = (
+                usage.get("completion_tokens")
+                or usage.get("candidates_token_count")
+                or usage.get("output_tokens")
+                or 0
+            )
+
+            total_tokens = (
+                usage.get("total_tokens")
+                or usage.get("total_token_count")
+                or prompt_tokens + completion_tokens
+            )
+
+            if prompt_tokens:
+                llm_tokens_total.labels(type="prompt").inc(prompt_tokens)
+
+            if completion_tokens:
+                llm_tokens_total.labels(type="completion").inc(completion_tokens)
+
+            if total_tokens:
+                llm_tokens_total.labels(type="total").inc(total_tokens)
+
+            
+            gemini_input_cost_per_1m = 0.075
+            gemini_output_cost_per_1m = 0.30
+
+            estimated_gemini_cost = (
+                (prompt_tokens / 1_000_000) * gemini_input_cost_per_1m
+                + (completion_tokens / 1_000_000) * gemini_output_cost_per_1m
+            )
+
+            if estimated_gemini_cost:
+                api_cost_usd_total.labels(provider="gemini").inc(
+                    estimated_gemini_cost
+                )
+
+            response_text = ai_response.get(
+                "message",
+                "Done."
+            )
+
+            print("5. Generando audio TTS")
+
+            stage = "tts"
+            tts_start = time.perf_counter()
+
+            generated_audio = await text_to_speech(
+                response_text
+            )
+
+            tts_time = time.perf_counter() - tts_start
+            voice_tts_duration_seconds.observe(tts_time)
+
+            print("6. Audio generado")
+
+            total_time = time.perf_counter() - total_start
+            voice_pipeline_duration_seconds.observe(total_time)
+            voice_pipeline_requests_total.labels(status="success").inc()
+
+            return {
+                "transcript": transcript,
+                "response": ai_response,
+                "audio": generated_audio
+            }
+
+        except Exception:
+            total_time = time.perf_counter() - total_start
+            voice_pipeline_duration_seconds.observe(total_time)
+
+            voice_pipeline_requests_total.labels(status="error").inc()
+            conversation_errors_total.labels(stage=stage).inc()
+
+            raise
+
+        finally:
+            if os.path.exists(audio_path):
+                os.remove(audio_path)
