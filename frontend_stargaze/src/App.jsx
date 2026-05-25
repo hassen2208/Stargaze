@@ -4,7 +4,7 @@ import './App.css';
 import Inicio from './pages/Inicio.jsx';
 import Login from './pages/Login.jsx';
 import Registro from './pages/Registro.jsx';
-
+import Metricas from './pages/Metricas.jsx';
 
 function App() {
 
@@ -15,6 +15,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Registro" element={<Registro />} />
+        <Route path="/Metricas" element={<Metricas />} />
       </Routes>
     </BrowserRouter>
   )
