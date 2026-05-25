@@ -8,3 +8,13 @@ backend/voice_headers.txt
 backend/voice_response.mp3
 voice_headers.txt
 backend/app/firebase/firebase_credentials.json
+
+# Firebase & Secrets
+backend/app/firebase/*.json
+*.json
+!package.json
+!tsconfig.json
+
+# IDEs
+.vscode/
+.idea/
