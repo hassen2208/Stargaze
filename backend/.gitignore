@@ -1,12 +1,26 @@
-__pycache__/
-.pytest_cache/
+# Environment
 .env
+backend/.env
+.venv/
+backend/.venv/
 
-firebase_credentials.json
-app/firebase/*.json
-
+# Python
+__pycache__/
 *.pyc
-*.pyo
+.pytest_cache/
 
-venv/
-app/temp_audio/*.webm
+# Databases
+*.db
+tasks.db
+
+# Temporary audio/files
+backend/app/temp_audio/*
+!backend/app/temp_audio/.gitkeep
+backend/*.mp3
+backend/*.wav
+backend/voice_response.mp3
+backend/voice_headers.txt
+
+# Test files
+backend/task-test.json
+backend/task-test-2.json
