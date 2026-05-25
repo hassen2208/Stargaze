@@ -26,7 +26,7 @@ function Inicio() {
             width: '100%',
             height: '100%',
             objectFit: 'cover', 
-            zIndex: -1 
+            zIndex: 0 
         }} 
         />
         <h2
