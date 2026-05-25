@@ -8,6 +8,7 @@ import Inicio from './pages/Inicio.jsx';
 import Login from './pages/Login.jsx';
 import Registro from './pages/Registro.jsx';
 import Metricas from './pages/Metricas.jsx';
+import Universo from './pages/Universo.jsx';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/app" element={<Layout />}>
           <Route index element={<Navigate to="observatorio" replace />} />
           <Route path="observatorio" element={<Observatorio />} />
+          <Route path="universo" element={<Universo />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
