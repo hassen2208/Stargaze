@@ -4,8 +4,8 @@
   height: 100vh;
   overflow: hidden;
   position: relative;
-  background: var(--bg-void);
 }
+
 .app-main {
   flex: 1;
   height: 100%;
