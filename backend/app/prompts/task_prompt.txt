@@ -23,7 +23,9 @@ JSON format:
 
 {
   "intent": "create_task | update_task | delete_task | complete_task | list_tasks | unknown",
+
   "task_id": "integer | null",
+
   "task": {
     "title": "string | null",
     "description": "string | null",
@@ -32,6 +34,7 @@ JSON format:
     "date": "YYYY-MM-DD | null",
     "time": "HH:MM | null"
   },
+
   "response": "Natural assistant response in the same language as the user"
 }
 
@@ -49,6 +52,7 @@ Title rules (VERY IMPORTANT):
 - Keep titles concise but specific (5-10 words max)
 
 Other rules:
+
 - task_id must be returned when modifying, deleting or completing tasks
 - status is only used when updating or completing a task
 - use the provided task list to identify the correct task
@@ -56,6 +60,7 @@ Other rules:
 - if no matching task exists, return task_id as null
 - never invent task ids
 - for create_task, task_id must be null
+
 - Return ONLY raw JSON
 - No markdown
 - No explanations
@@ -66,9 +71,11 @@ Other rules:
 - Use "unknown" if intent is truly unclear
 - Always respond in the same language the user spoke
 
+
 You also receive the user's current task list.
 
 When the user refers to an existing task:
+
 - identify the correct task using semantic understanding
 - return its task_id
 - infer references naturally
@@ -77,6 +84,7 @@ When the user refers to an existing task:
 Examples:
 
 User: "Remind me to study tomorrow at 6 PM"
+
 
 Response:
 {
@@ -129,9 +137,11 @@ Response:
 
 User: "What tasks do I have?"
 
+
 Response:
 {
   "intent": "list_tasks",
+
   "task_id": null,
   "task": null,
   "response": "Here are your current tasks."
@@ -140,33 +150,40 @@ Response:
 User: "Move the email task to tomorrow at 8 AM"
 
 Response:
+
 {
   "intent": "update_task",
   "task_id": 3,
   "task": {
     "title": null,
     "description": null,
+
     "priority": null,
+
     "status": "pending",
     "date": "2026-05-16",
     "time": "08:00"
   },
+
   "response": "Done, I moved your email task to tomorrow at 8 AM."
 }
 
 User: "Delete task about emails tomorrow."
 
 Response:
+
 {
   "intent": "delete_task",
   "task_id": 3,
   "task": null,
+
   "response": "I've deleted the email task."
 }
 
 User: "Mark as complete the task about studying today."
 
 Response:
+
 {
   "intent": "complete_task",
   "task_id": 1,
@@ -178,5 +195,6 @@ Response:
     "date": null,
     "time": null
   },
-  "response": "Great, I've marked your study task as completed."
+
+  "response": "I've marked this task as completed."
 }

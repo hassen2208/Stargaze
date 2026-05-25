@@ -66,7 +66,7 @@ function Registro() {
         }
     };
 
-    const [botonRegistrar, setBotonRegistrar] = useState(false);
+
     const navigation = useNavigate();
     const handleClickLogin = () => {
         navigation('/Login');
@@ -129,10 +129,11 @@ function Registro() {
                                 onClick={() => handleClickLogin()}
                                 style={{outline:"none",marginTop: "5px",fontSize: "23px", background: 'none', color: 'rgb(245, 240, 240)', width: "385px", height: "60px", marginLeft:"230px"}}>Ya tienes cuenta? Iniciar sesión</button>
                         <br />
-                        <motion.button onClick={handleSubmit} 
-                                transition={{duration:1, ease: "easeInOut"}}
-                                animate={{opacity:1, scale: botonRegistrar? 50:1,}}
-                                style={{outline:"none", marginTop: "5px",fontSize: "23px", background: 'rgb(62, 6, 245)', color: 'rgb(245, 240, 240)', borderRadius: "30px", width: "285px", height: "60px",marginLeft:"150px"}}>Registrarse</motion.button>
+
+                        <button onClick={handleSubmit} 
+                               
+                                style={{outline:"none", marginTop: "5px",fontSize: "23px", background: 'rgb(62, 6, 245)', color: 'rgb(245, 240, 240)', borderRadius: "30px", width: "285px", height: "60px",marginLeft:"150px"}}>Registrarse</button>
+
                     </div>
                 </div>
     )
