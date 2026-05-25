@@ -3,8 +3,10 @@ __pycache__/
 .env
 
 firebase_credentials.json
+app/firebase/*.json
 
 *.pyc
 *.pyo
 
 venv/
+app/temp_audio/*.webm
