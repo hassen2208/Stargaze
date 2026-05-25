@@ -1,18 +1,15 @@
 version: "3.9"
 
 services:
-
   backend:
     build: ./backend
-
     container_name: stargaze_backend
-
     ports:
       - "8000:8000"
-
     volumes:
       - ./backend:/app
-
+      # Mapeo explícito del archivo de Firebase para evitar errores de ruta en Docker
+      - ./backend/app/firebase/stargaze-7f6bf-firebase-adminsdk-fbsvc-3eeb963ee6.json:/app/app/firebase/stargaze-7f6bf-firebase-adminsdk-fbsvc-3eeb963ee6.json
     env_file:
       - ./backend/.env
 
@@ -23,14 +20,12 @@ services:
     image: postgres:16
 
     container_name: stargaze_db
-
     restart: always
 
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: stargaze_db
-
     ports:
       - "5432:5432"
 

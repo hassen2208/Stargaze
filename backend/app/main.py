@@ -1,8 +1,18 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from app.api.router import api_router
 from app.core.config import settings
 from app.core.firebase import *
+
+
+# Comentados temporalmente para diagnóstico:
+# from app.middleware.logging_middleware import LoggingMiddleware
+# from app.middleware.error_handler import global_exception_handler
+# from app.middleware.metrics_middleware import MetricsMiddleware
+# from app.core.rate_limit import limiter
+
 
 from prometheus_fastapi_instrumentator import Instrumentator
 
@@ -24,6 +34,7 @@ from app.middleware.metrics_middleware import (
 
 from app.core.rate_limit import limiter
 
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -31,6 +42,21 @@ app = FastAPI(
     version=settings.APP_VERSION
 )
 
+
+
+# ── CORS configurado correctamente ──────────────────
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:5174"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ── Middlewares ─────────────────────────────────────
 app.add_middleware(LoggingMiddleware)
 
 app.add_exception_handler(
@@ -44,33 +70,18 @@ app.add_middleware(
 
 app.state.limiter = limiter
 
+# ── Rutas ───────────────────────────────────────────
 app.include_router(
     api_router,
     prefix=settings.API_PREFIX
 )
 
+# ── Métricas Prometheus ─────────────────────────────
 Instrumentator().instrument(app).expose(app)
 
-
+# ── Ruta raíz ───────────────────────────────────────
 @app.get("/")
 def root():
     return {
         "message": "Stargaze API Running"
     }
-
-from fastapi.middleware.cors import CORSMiddleware
-
-app.add_middleware(
-
-    CORSMiddleware,
-
-    allow_origins=[
-        "http://localhost:5173"
-    ],
-
-    allow_credentials=True,
-
-    allow_methods=["*"],
-
-    allow_headers=["*"],
-)

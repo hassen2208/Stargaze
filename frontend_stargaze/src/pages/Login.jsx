@@ -47,16 +47,11 @@ function Login() {
             );
 
             const data = await response.json();
-
             console.log(data);
-
-            
-            navigation('/Metricas')
-
+            navigation("/app/observatorio");
         } catch (err) {
 
             setError("Credenciales incorrectas");
-
             console.error(err);
 
         }
@@ -109,7 +104,7 @@ function Login() {
                         style={{color: "white", background: "rgb(56, 19, 136)", width: "570px", height: "40px", borderRadius: "30px", border: "none", padding: "10px"}}/>
                 
                 </form>
-                
+             
                 <button 
                                 onClick={() => handleClick()} 
                                 style={{outline:"none",marginTop: "40px",fontSize: "23px", background: 'none', color: 'rgb(245, 240, 240)', width: "385px", height: "60px", marginLeft:"230px"}} >No tienes cuenta? Registrarse</button>
@@ -117,6 +112,7 @@ function Login() {
                 <button 
                                 onClick={handleSubmit}
                                 style={{outline:"none", marginTop: "20px",fontSize: "23px", background: 'rgb(62, 6, 245)', color: 'rgb(245, 240, 240)', borderRadius: "30px", width: "285px", height: "60px",marginLeft:"150px"}}>Iniciar sesión</button>
+
             </div>
         </div>
     )

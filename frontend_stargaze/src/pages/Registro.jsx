@@ -66,7 +66,7 @@ function Registro() {
         }
     };
 
-    
+
     const navigation = useNavigate();
     const handleClickLogin = () => {
         navigation('/Login');
@@ -129,9 +129,11 @@ function Registro() {
                                 onClick={() => handleClickLogin()}
                                 style={{outline:"none",marginTop: "5px",fontSize: "23px", background: 'none', color: 'rgb(245, 240, 240)', width: "385px", height: "60px", marginLeft:"230px"}}>Ya tienes cuenta? Iniciar sesión</button>
                         <br />
+
                         <button onClick={handleSubmit} 
                                
                                 style={{outline:"none", marginTop: "5px",fontSize: "23px", background: 'rgb(62, 6, 245)', color: 'rgb(245, 240, 240)', borderRadius: "30px", width: "285px", height: "60px",marginLeft:"150px"}}>Registrarse</button>
+
                     </div>
                 </div>
     )
