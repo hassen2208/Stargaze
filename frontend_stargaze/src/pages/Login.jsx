@@ -1,4 +1,4 @@
-import './App.css';
+import './AppLR.css';
 import ImagenLogin from '../assets/imagenes/Login.png';
 import { useState} from "react";
 import { motion } from "framer-motion";

@@ -1,6 +1,6 @@
 import  ImagenRegistro from '../assets/imagenes/Registro.png';  
 import { useState} from "react";
-import './App.css';
+import './AppLR.css';
 import { motion } from "framer-motion";
 import { useNavigate } from 'react-router-dom';
 

@@ -1,4 +1,4 @@
-import "./App.css";
+import "./AppLR.css";
 import React, { useEffect, useState } from "react";
 import ImagenMetricas from '../assets/imagenes/fondoMetricas.png';
 function metricas() {
