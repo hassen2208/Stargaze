@@ -36,13 +36,37 @@ async def test_process_message():
         with patch(
             "app.modules.conversation.service.GeminiService.generate_response",
             new_callable=AsyncMock,
-            return_value='{"intent":"create_task"}'
+            return_value='''
+            {
+                "intent": "create_task",
+                "task_id": null,
+                "task": {
+                    "title": "Task",
+                    "description": null,
+                    "priority": "medium",
+                    "status": null,
+                    "date": null,
+                    "time": null
+                },
+                "response": "Task created"
+            }
+            '''
         ):
 
             with patch(
                 "app.modules.conversation.service.parse_llm_json",
                 return_value={
-                    "intent": "create_task"
+                    "intent": "create_task",
+                    "task_id": None,
+                    "task": {
+                        "title": "Task",
+                        "description": None,
+                        "priority": "medium",
+                        "status": None,
+                        "date": None,
+                        "time": None
+                    },
+                    "response": "Task created"
                 }
             ):
 
@@ -64,6 +88,8 @@ async def test_process_message():
 
                     db.commit.assert_called_once()
 
-                    assert result == {
-                        "message": "Task created"
-                    }
+                    assert result["message"] == "Task created"
+
+                    assert "usage" in result
+
+                    assert "estimated_cost_usd" in result

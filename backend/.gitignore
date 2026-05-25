@@ -24,3 +24,16 @@ backend/voice_headers.txt
 # Test files
 backend/task-test.json
 backend/task-test-2.json
+
+__pycache__/
+.pytest_cache/
+.env
+
+firebase_credentials.json
+app/firebase/*.json
+
+*.pyc
+*.pyo
+
+venv/
+app/temp_audio/*.webm
