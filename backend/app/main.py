@@ -1,7 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-
 from app.api.router import api_router
 from app.core.config import settings
 from app.core.firebase import *
@@ -12,6 +10,10 @@ from app.core.firebase import *
 # from app.middleware.error_handler import global_exception_handler
 # from app.middleware.metrics_middleware import MetricsMiddleware
 # from app.core.rate_limit import limiter
+
+import app.models
+from app.core.database import Base, engine
+
 
 
 from prometheus_fastapi_instrumentator import Instrumentator
