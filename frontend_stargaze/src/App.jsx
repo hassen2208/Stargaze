@@ -1,9 +1,13 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
 import Layout from './components/Layout';
+import Observatorio from './pages/Observatorio.jsx';
+import { useState } from 'react';
+import {BrowserRouter,Routes, Route, Navigate} from "react-router-dom";
+import './App.css';
 import Inicio from './pages/Inicio.jsx';
 import Login from './pages/Login.jsx';
 import Registro from './pages/Registro.jsx';
-import Observatorio from './pages/Observatorio.jsx';
+import Metricas from './pages/Metricas.jsx';
 
 function App() {
   return (
@@ -23,3 +27,4 @@ function App() {
 }
 
 export default App;
+

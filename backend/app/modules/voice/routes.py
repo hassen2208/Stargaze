@@ -11,6 +11,7 @@ from app.api.dependencies import get_current_user
 from app.modules.voice.controller import VoiceController
 from app.utils.audio_utils import generate_audio_filename
 
+
 router = APIRouter()
 
 
@@ -19,6 +20,7 @@ async def process_voice(
     background_tasks: BackgroundTasks,
     audio: UploadFile = File(...),
     db: Session = Depends(get_db),
+
     current_user=Depends(get_current_user),
 ):
     try:
@@ -35,6 +37,7 @@ async def process_voice(
         with open(file_path, "wb") as buffer:
             content = await audio.read()
             print(f"4. Audio leído: {len(content)} bytes")
+
             buffer.write(content)
 
         print("5. Audio guardado")
@@ -49,6 +52,7 @@ async def process_voice(
         response = result.get("response", {})
         intent = response.get("intent", "") if isinstance(response, dict) else ""
 
+
         return FileResponse(
             path=generated_audio_path,
             media_type="audio/mpeg",
@@ -62,9 +66,11 @@ async def process_voice(
         print("ERROR EN /voice/process")
         print(str(e))
         traceback.print_exc()
+
         raise e
 
 
 @router.get("/health")
 def voice_health():
     return {"module": "voice", "status": "ok"}
+

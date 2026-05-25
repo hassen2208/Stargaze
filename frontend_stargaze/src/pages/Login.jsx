@@ -16,11 +16,8 @@ function Login() {
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-
         setError("");
-
         setLoading(true);
 
         try {
@@ -50,15 +47,11 @@ function Login() {
             );
 
             const data = await response.json();
-
             console.log(data);
-
             navigation("/app/observatorio");
-
         } catch (err) {
 
             setError("Credenciales incorrectas");
-
             console.error(err);
 
         }
@@ -68,8 +61,7 @@ function Login() {
     const navigation = useNavigate();
 
     const handleClick = () => {
-        setBotonIniciarSesion(true);
-        setTimeout(() => navigation('/Registro'), 300);
+        navigation('/Registro');
     };
 
     return (
@@ -112,16 +104,15 @@ function Login() {
                         style={{color: "white", background: "rgb(56, 19, 136)", width: "570px", height: "40px", borderRadius: "30px", border: "none", padding: "10px"}}/>
                 
                 </form>
-                
-                <motion.button 
+             
+                <button 
                                 onClick={() => handleClick()} 
-                                style={{outline:"none",marginTop: "40px",fontSize: "23px", background: 'none', color: 'rgb(245, 240, 240)', width: "385px", height: "60px", marginLeft:"230px"}} >No tienes cuenta? Registrarse</motion.button>
+                                style={{outline:"none",marginTop: "40px",fontSize: "23px", background: 'none', color: 'rgb(245, 240, 240)', width: "385px", height: "60px", marginLeft:"230px"}} >No tienes cuenta? Registrarse</button>
                 <br />
-                <motion.button 
+                <button 
                                 onClick={handleSubmit}
-                                transition={{duration:1, ease: "easeInOut"}}
-                                animate={{opacity:1, scale: botonIniciarSesion? 50:1,}}
-                                style={{outline:"none", marginTop: "20px",fontSize: "23px", background: 'rgb(62, 6, 245)', color: 'rgb(245, 240, 240)', borderRadius: "30px", width: "285px", height: "60px",marginLeft:"150px"}}>Iniciar sesión</motion.button>
+                                style={{outline:"none", marginTop: "20px",fontSize: "23px", background: 'rgb(62, 6, 245)', color: 'rgb(245, 240, 240)', borderRadius: "30px", width: "285px", height: "60px",marginLeft:"150px"}}>Iniciar sesión</button>
+
             </div>
         </div>
     )
