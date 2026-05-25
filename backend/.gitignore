@@ -9,3 +9,4 @@ app/firebase/*.json
 *.pyo
 
 venv/
+app/temp_audio/*.webm
