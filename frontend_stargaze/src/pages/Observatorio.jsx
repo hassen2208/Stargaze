@@ -45,6 +45,63 @@ function detectTaskListIntent(text) {
   const m = t.match(/(?:proximos?|siguientes?)\s+(\d+)\s+dias?/);
   if (m) return { match: true, startDay: 0, daysAhead: parseInt(m[1]), label: `los próximos ${m[1]} días` };
   if (/esta\s+semana/.test(t)) return { match: true, startDay: 0, daysAhead: 7, label: 'esta semana' };
+  // Rango de días de semana: "del lunes al miércoles", "martes a jueves", etc.
+  {
+    const _DIAS = { lunes:1, martes:2, miercoles:3, jueves:4, viernes:5, sabado:6, domingo:0 };
+    const _rng = t.match(/(?:del?\s+)?(lunes|martes|miercoles|jueves|viernes|sabado|domingo)\s+(?:al?|a)\s+(lunes|martes|miercoles|jueves|viernes|sabado|domingo)/);
+    if (_rng) {
+      const _sDow = _DIAS[_rng[1]], _eDow = _DIAS[_rng[2]];
+      const _todayDow = new Date().getDay();
+      const _sd = (_sDow - _todayDow + 7) % 7;
+      const _ed = _sd + (_eDow - _sDow + 7) % 7;
+      const _base = new Date(); _base.setHours(0,0,0,0);
+      const _sDate = new Date(_base); _sDate.setDate(_sDate.getDate() + _sd);
+      const _eDate = new Date(_base); _eDate.setDate(_eDate.getDate() + _ed);
+      const _sLbl = _sDate.toLocaleDateString('es-ES', { weekday: 'long' });
+      const _eLbl = _eDate.toLocaleDateString('es-ES', { weekday: 'long' });
+      return { match: true, startDay: _sd, daysAhead: _ed, label: `${_sLbl} a ${_eLbl}` };
+    }
+  }
+  // Semana laboral genérica
+  if (/semana\s+laboral/.test(t)) {
+    const _dow = new Date().getDay();
+    const _daysToFri = _dow <= 5 ? 5 - _dow : 6;
+    return { match: true, startDay: 0, daysAhead: Math.max(_daysToFri, 0), label: 'lunes a viernes' };
+  }
+  // Rango de días del mes: "del 27 al 28", "del 27 al 28 de mayo"
+  const _rangeDay = t.match(/del?\s+(\d{1,2})\s+al?\s+(\d{1,2})(?:\s+de\s+\w+)?/);
+  if (_rangeDay) {
+    const _n1 = parseInt(_rangeDay[1]), _n2 = parseInt(_rangeDay[2]);
+    if (_n1 >= 1 && _n1 <= 31 && _n2 >= 1 && _n2 <= 31) {
+      const _today = new Date(); _today.setHours(0,0,0,0);
+      let _t1 = new Date(_today.getFullYear(), _today.getMonth(), _n1);
+      if (_t1 < _today) _t1 = new Date(_today.getFullYear(), _today.getMonth() + 1, _n1);
+      let _t2 = new Date(_today.getFullYear(), _today.getMonth(), _n2);
+      if (_t2 < _t1) _t2 = new Date(_t1.getFullYear(), _t1.getMonth() + (_n2 < _n1 ? 1 : 0), _n2);
+      const _sd = Math.round((_t1 - _today) / 86400000);
+      const _ed = Math.round((_t2 - _today) / 86400000);
+      if (_sd >= 0 && _ed <= 90) {
+        const _l1 = _t1.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+        const _l2 = _t2.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+        return { match: true, startDay: _sd, daysAhead: _ed, label: `del ${_l1} al ${_l2}` };
+      }
+    }
+  }
+  // Día específico del mes: "el 27", "el día 27", "el 27 de mayo"
+  const _dayM = t.match(/\bel\s+(?:d[ií]a\s+)?(\d{1,2})(?:\s+de\s+\w+)?\b/);
+  if (_dayM) {
+    const _n = parseInt(_dayM[1]);
+    if (_n >= 1 && _n <= 31) {
+      const _today = new Date(); _today.setHours(0,0,0,0);
+      let _target = new Date(_today.getFullYear(), _today.getMonth(), _n);
+      if (_target < _today) _target = new Date(_today.getFullYear(), _today.getMonth() + 1, _n);
+      const _sd = Math.round((_target - _today) / 86400000);
+      if (_sd >= 0 && _sd <= 90) {
+        const _lbl = _target.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+        return { match: true, startDay: _sd, daysAhead: _sd, label: `el ${_lbl}` };
+      }
+    }
+  }
   if (
     /(lista|muestr|cu[aá]ntas?|cu[aá]les?|que\s+(citas?|tareas?)|tengo\s+(hoy|manana|esta))/.test(t) &&
     /(hoy|manana|semana|dias?|prox)/.test(t)

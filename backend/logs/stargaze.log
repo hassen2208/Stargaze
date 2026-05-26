@@ -6468,3 +6468,99 @@ audioread.exceptions.NoBackendError
 2026-05-26 23:21:03.453 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.2183s
 2026-05-26 23:21:03.469 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0056s
 2026-05-26 23:21:03.470 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0067s
+2026-05-26 23:24:55.353 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.2710s
+2026-05-26 23:24:55.355 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.2727s
+2026-05-26 23:24:55.369 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0077s
+2026-05-26 23:24:55.372 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0103s
+2026-05-26 23:25:03.737 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:25:05.105 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:25:05.106 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:25:05.106 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:25:05.125 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.4027s
+2026-05-26 23:25:05.127 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.4048s
+2026-05-26 23:25:05.144 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0053s
+2026-05-26 23:25:05.145 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0061s
+2026-05-26 23:25:16.185 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:25:17.154 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:25:17.155 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:25:17.155 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:25:17.163 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 0.9901s
+2026-05-26 23:25:17.164 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.9912s
+2026-05-26 23:25:17.179 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0054s
+2026-05-26 23:25:17.180 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0061s
+2026-05-26 23:25:26.933 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:25:27.860 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:25:27.861 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:25:27.861 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:25:27.869 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 0.9511s
+2026-05-26 23:25:27.871 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.9527s
+2026-05-26 23:25:27.887 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0049s
+2026-05-26 23:25:27.888 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0057s
+2026-05-26 23:26:28.059 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:26:29.311 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:26:29.312 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:26:29.313 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:26:29.327 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.2882s
+2026-05-26 23:26:29.328 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.2889s
+2026-05-26 23:26:29.345 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0058s
+2026-05-26 23:26:29.346 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0072s
+2026-05-26 23:26:39.648 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:26:40.693 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:26:40.694 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:26:40.697 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:26:40.704 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.0639s
+2026-05-26 23:26:40.705 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.0652s
+2026-05-26 23:26:40.721 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0055s
+2026-05-26 23:26:40.723 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0083s
+2026-05-26 23:29:35.576 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.2204s
+2026-05-26 23:29:35.579 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.2233s
+2026-05-26 23:29:35.598 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0105s
+2026-05-26 23:29:35.601 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0134s
+2026-05-26 23:29:43.461 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:29:44.899 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:29:44.900 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:29:44.900 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:29:44.919 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.4726s
+2026-05-26 23:29:44.919 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.4733s
+2026-05-26 23:29:44.940 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0077s
+2026-05-26 23:29:44.940 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0083s
+2026-05-26 23:29:57.518 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:29:58.515 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:29:58.516 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:29:58.517 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:29:58.533 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.0317s
+2026-05-26 23:29:58.537 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.0356s
+2026-05-26 23:29:58.551 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0047s
+2026-05-26 23:29:58.552 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0056s
+2026-05-26 23:30:15.972 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:30:16.891 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:30:16.892 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:30:16.893 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:30:16.910 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.1373s
+2026-05-26 23:30:16.911 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.1386s
+2026-05-26 23:30:16.940 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0126s
+2026-05-26 23:30:16.941 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0134s
+2026-05-26 23:30:23.632 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:30:24.643 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:30:24.644 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:30:24.644 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:30:24.677 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.0608s
+2026-05-26 23:30:24.678 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.0619s
+2026-05-26 23:30:24.705 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0072s
+2026-05-26 23:30:24.706 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0083s
+2026-05-26 23:30:46.107 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:30:47.141 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:30:47.143 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:30:47.144 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:30:47.150 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.0527s
+2026-05-26 23:30:47.151 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.0535s
+2026-05-26 23:30:47.169 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0066s
+2026-05-26 23:30:47.170 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0074s
+2026-05-26 23:30:54.799 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:30:56.233 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:30:56.234 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:30:56.235 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:30:56.250 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.4663s
+2026-05-26 23:30:56.251 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.4672s
+2026-05-26 23:30:56.270 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0052s
+2026-05-26 23:30:56.272 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0074s
