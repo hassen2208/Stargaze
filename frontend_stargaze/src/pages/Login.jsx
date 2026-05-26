@@ -1,4 +1,4 @@
-import './App.css';
+import './AppLR.css';
 import ImagenLogin from '../assets/imagenes/Login.png';
 import { useState} from "react";
 import { motion } from "framer-motion";
@@ -31,6 +31,7 @@ function Login() {
 
             const token =
                 await userCredential.user.getIdToken();
+                console.log(token);
 
             localStorage.setItem(
                 "token",
@@ -38,7 +39,7 @@ function Login() {
             );
 
             const response = await fetch(
-                "http://localhost:8000/api/v1/auth/me",
+                "/api/v1/auth/me",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
