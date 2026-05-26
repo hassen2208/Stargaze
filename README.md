@@ -23,8 +23,8 @@
 - Frontend: React + Vite
 - Base de datos: PostgreSQL
 - Autenticación: Firebase Authentication
-- Speech-to-Text: Faster-Whisper
-- Text-to-Speech: Coqui TTS
+- Speech-to-Text: DeepGram
+- Text-to-Speech: Edge TTS
 - LLM: Gemini API
 - Contenedores: Docker + Docker Compose
 - CI/CD: GitHub Actions
