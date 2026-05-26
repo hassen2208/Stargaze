@@ -6,6 +6,7 @@ on:
       - main
       - develop
       - feature/docker_cicd_tests
+      - feature/integracion
 
   pull_request:
     branches:
