@@ -45,7 +45,7 @@
 
 1. Clona el repositorio:
 ```
-git clone https://github.com/Juanmaperea/Stargaze.git
+git clone https://github.com/hassen2208/Stargaze.git
 cd Stargaze
 ```
 2. Configurar el archivo .env de acuerdo al archivo .env.example
