@@ -2,10 +2,11 @@ import os
 import traceback
 
 from fastapi import APIRouter, UploadFile, File, Depends
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.background import BackgroundTasks
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from google.api_core.exceptions import ResourceExhausted
 
 from app.core.database import get_db
 from app.api.dependencies import get_current_user
@@ -35,16 +36,37 @@ async def process_voice(
         generated_audio_path = result["audio"]
         background_tasks.add_task(os.remove, generated_audio_path)
 
+        # Extraer intent y texto de respuesta del orquestador
         response = result.get("response", {})
         intent = response.get("intent", "") if isinstance(response, dict) else ""
+
+        if isinstance(response, dict):
+            response_text = (
+                response.get("message")
+                or response.get("text")
+                or response.get("response")
+                or ""
+            )
+        elif isinstance(response, str):
+            response_text = response
+        else:
+            response_text = ""
 
         return FileResponse(
             path=generated_audio_path,
             media_type="audio/mpeg",
             headers={
                 "X-Transcript": str(result.get("transcript", "")),
-                "X-Intent": intent,
+                "X-Intent":     intent,
+                "X-Response":   str(response_text),
             },
+        )
+
+    except ResourceExhausted as e:
+        print("CUOTA GEMINI AGOTADA:", str(e))
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Cuota de IA agotada. Crea una nueva API key en aistudio.google.com"},
         )
     except Exception as e:
         print("ERROR EN /voice/process")
