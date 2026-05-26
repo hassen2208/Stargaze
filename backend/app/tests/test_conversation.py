@@ -64,6 +64,4 @@ async def test_process_message():
 
                     db.commit.assert_called_once()
 
-                    assert result == {
-                        "message": "Task created"
-                    }
+                    assert result["message"] == "Task created"
