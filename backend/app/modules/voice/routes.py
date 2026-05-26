@@ -16,6 +16,15 @@ from app.utils.audio_utils import generate_audio_filename
 router = APIRouter()
 
 
+def _safe_remove(path: str):
+    """Elimina un archivo ignorando errores si ya no existe."""
+    try:
+        if path and os.path.exists(path):
+            os.remove(path)
+    except Exception:
+        pass
+
+
 @router.post("/process")
 async def process_voice(
     background_tasks: BackgroundTasks,
@@ -23,6 +32,8 @@ async def process_voice(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
+    file_path = None
+    generated_audio_path = None
     try:
         print("1. Endpoint iniciado")
         extension = audio.filename.split(".")[-1]
@@ -34,7 +45,10 @@ async def process_voice(
 
         result = await VoiceController.process_voice(db, current_user.id, file_path)
         generated_audio_path = result["audio"]
-        background_tasks.add_task(os.remove, generated_audio_path)
+
+        # Borrar ambos archivos temporales tras enviar la respuesta
+        background_tasks.add_task(_safe_remove, file_path)
+        background_tasks.add_task(_safe_remove, generated_audio_path)
 
         # Extraer intent y texto de respuesta del orquestador
         response = result.get("response", {})
@@ -64,6 +78,9 @@ async def process_voice(
 
     except ResourceExhausted as e:
         print("CUOTA GEMINI AGOTADA:", str(e))
+        # Limpiar archivos aunque haya error de cuota
+        background_tasks.add_task(_safe_remove, file_path)
+        background_tasks.add_task(_safe_remove, generated_audio_path)
         return JSONResponse(
             status_code=429,
             content={"detail": "Cuota de IA agotada. Crea una nueva API key en aistudio.google.com"},
@@ -71,6 +88,9 @@ async def process_voice(
     except Exception as e:
         print("ERROR EN /voice/process")
         traceback.print_exc()
+        # Limpiar archivos aunque haya cualquier otro error
+        background_tasks.add_task(_safe_remove, file_path)
+        background_tasks.add_task(_safe_remove, generated_audio_path)
         raise e
 
 
@@ -86,7 +106,7 @@ async def tts_endpoint(
 ):
     from app.services.tts_service import text_to_speech
     audio_path = await text_to_speech(payload.text)
-    background_tasks.add_task(os.remove, audio_path)
+    background_tasks.add_task(_safe_remove, audio_path)
     return FileResponse(path=audio_path, media_type="audio/mpeg")
 
 
