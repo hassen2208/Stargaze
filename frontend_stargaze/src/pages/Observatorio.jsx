@@ -37,6 +37,9 @@ function detectTaskListIntent(text) {
   if (/(agendame|agenda(?:me)?|crea(?:me)?|a[nñ]ade|agrega(?:me)?|ponme|pon\s+una|registra|nueva?\s+(cita|tarea)|program)/.test(t)) {
     return { match: false, startDay: 0, daysAhead: 0, label: '' };
   }
+  // Combinaciones de días (deben ir ANTES de los checks individuales)
+  if (/hoy\s+(y\s+)?(de\s+)?manana|manana\s+(y\s+)?hoy/.test(t))
+    return { match: true, startDay: 0, daysAhead: 1, label: 'hoy y mañana' };
   if (/\bhoy\b/.test(t))    return { match: true, startDay: 0, daysAhead: 0, label: 'hoy' };
   if (/\bmanana\b/.test(t)) return { match: true, startDay: 1, daysAhead: 1, label: 'mañana' };
   const m = t.match(/(?:proximos?|siguientes?)\s+(\d+)\s+dias?/);
@@ -418,7 +421,7 @@ export default function Observatorio() {
         setChatLoading(true);
 
         try {
-          const { transcript: userText, audioBlob: aiAudio } = await voiceApi.process(blob);
+          const { transcript: userText, audioBlob: aiAudio, responseText: aiText } = await voiceApi.process(blob);
 
           // Mostrar lo que dijo el usuario
           if (userText) {
@@ -460,8 +463,8 @@ export default function Observatorio() {
             }
 
           } else {
-            // Respuesta normal: mostrar texto del AI y hablar
-            addMsg('ai', '🔊 Respondió por voz', false);
+            // Respuesta normal: mostrar el texto del AI y reproducir el audio
+            addMsg('ai', aiText || '🔊 Respondió por voz', false);
             reloadTasks();
             if (aiAudio && aiAudio.size > 0) playAudio(aiAudio, null);
           }

@@ -5647,3 +5647,824 @@ audioread.exceptions.NoBackendError
 2026-05-26 20:56:30.707 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
 2026-05-26 20:56:30.930 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/voice/process 429 6.2141s
 2026-05-26 20:56:30.932 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 6.2156s
+2026-05-26 21:03:53.568 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.5062s
+2026-05-26 21:03:53.571 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.5091s
+2026-05-26 21:03:53.594 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0084s
+2026-05-26 21:03:53.595 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0094s
+2026-05-26 21:04:00.219 | INFO     | app.modules.voice.pipeline:process_voice:48 - VOICE MODULE: 1. Iniciando transcripción:
+2026-05-26 21:04:00.220 | INFO     | app.services.audio_preprocessing_service:reduce_noise:15 - Preprocessing audio: app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm
+2026-05-26 21:04:05.945 | ERROR    | app.services.audio_preprocessing_service:reduce_noise:55 - Audio preprocessing failed
+Traceback (most recent call last):
+
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 176, in load
+    y, sr_native = __soundfile_load(path, offset, duration, dtype)
+                   │                │     │       │         └ <class 'numpy.float32'>
+                   │                │     │       └ None
+                   │                │     └ 0.0
+                   │                └ 'app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm'
+                   └ <function __soundfile_load at 0x7dbe512dbe20>
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 209, in __soundfile_load
+    context = sf.SoundFile(path)
+              │  │         └ 'app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm'
+              │  └ <class 'soundfile.SoundFile'>
+              └ <module 'soundfile' from '/usr/local/lib/python3.11/site-packages/soundfile.py'>
+  File "/usr/local/lib/python3.11/site-packages/soundfile.py", line 690, in __init__
+    self._file = self._open(file, mode_int, closefd)
+    │    │       │    │     │     │         └ True
+    │    │       │    │     │     └ 16
+    │    │       │    │     └ 'app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm'
+    │    │       │    └ <function SoundFile._open at 0x7dbed868f600>
+    │    │       └ SoundFile('app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm', mode='r', samplerate=0, channels=0, format='FILE', subt...
+    │    └ None
+    └ SoundFile('app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm', mode='r', samplerate=0, channels=0, format='FILE', subt...
+  File "/usr/local/lib/python3.11/site-packages/soundfile.py", line 1265, in _open
+    raise LibsndfileError(err, prefix="Error opening {0!r}: ".format(self.name))
+          │               │                                          │    └ <property object at 0x7dbed867f790>
+          │               │                                          └ SoundFile('app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm', mode='r', samplerate=0, channels=0, format='FILE', subt...
+          │               └ 1
+          └ <class 'soundfile.LibsndfileError'>
+
+soundfile.LibsndfileError: Error opening 'app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm': Format not recognised.
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "/usr/local/bin/uvicorn", line 6, in <module>
+    sys.exit(main())
+    │   │    └ <Command main>
+    │   └ <built-in function exit>
+    └ <module 'sys' (built-in)>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1524, in __call__
+    return self.main(*args, **kwargs)
+           │    │     │       └ {}
+           │    │     └ ()
+           │    └ <function Command.main at 0x7dbee0458860>
+           └ <Command main>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1445, in main
+    rv = self.invoke(ctx)
+         │    │      └ <click.core.Context object at 0x7dbee13ad490>
+         │    └ <function Command.invoke at 0x7dbee0458ae0>
+         └ <Command main>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1308, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           │   │      │    │           │   └ {'host': '0.0.0.0', 'port': 8000, 'app': 'app.main:app', 'uds': None, 'fd': None, 'reload': False, 'reload_dirs': (), 'reload...
+           │   │      │    │           └ <click.core.Context object at 0x7dbee13ad490>
+           │   │      │    └ <function main at 0x7dbee00598a0>
+           │   │      └ <Command main>
+           │   └ <function Context.invoke at 0x7dbee04598a0>
+           └ <click.core.Context object at 0x7dbee13ad490>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 877, in invoke
+    return callback(*args, **kwargs)
+           │         │       └ {'host': '0.0.0.0', 'port': 8000, 'app': 'app.main:app', 'uds': None, 'fd': None, 'reload': False, 'reload_dirs': (), 'reload...
+           │         └ ()
+           └ <function main at 0x7dbee00598a0>
+  File "/usr/local/lib/python3.11/site-packages/uvicorn/main.py", line 410, in main
+    run(
+    └ <function run at 0x7dbee0320900>
+  File "/usr/local/lib/python3.11/site-packages/uvicorn/main.py", line 577, in run
+    server.run()
+    │      └ <function Server.run at 0x7dbee0323600>
+    └ <uvicorn.server.Server object at 0x7dbee02db250>
+  File "/usr/local/lib/python3.11/site-packages/uvicorn/server.py", line 65, in run
+    return asyncio.run(self.serve(sockets=sockets))
+           │       │   │    │             └ None
+           │       │   │    └ <function Server.serve at 0x7dbee03236a0>
+           │       │   └ <uvicorn.server.Server object at 0x7dbee02db250>
+           │       └ <function run at 0x7dbee1100d60>
+           └ <module 'asyncio' from '/usr/local/lib/python3.11/asyncio/__init__.py'>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object Server.serve at 0x7dbee005ca90>
+           │      └ <function Runner.run at 0x7dbee0658b80>
+           └ <asyncio.runners.Runner object at 0x7dbee00a69d0>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<Server.serve() running at /usr/local/lib/python3.11/site-packages/uvicorn/server.py:69> wai...
+           │    │     └ <cyfunction Loop.run_until_complete at 0x7dbee02ab100>
+           │    └ <uvloop.Loop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7dbee00a69d0>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+          │    │   │      │                      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7dbe58c98220>
+          │    │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c980e0>
+          │    │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>
+          └ <app.middleware.logging_middleware.LoggingMiddleware object at 0x7dbe5a4746d0>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+          │    │               │      │        │                     └ Headers({'host': 'backend:8000', 'connection': 'close', 'content-length': '44170', 'sec-ch-ua-platform': '"Windows"', 'author...
+          │    │               │      │        └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7dbe58c98220>
+          │    │               │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c980e0>
+          │    │               └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <function CORSMiddleware.simple_response at 0x7dbedf22fba0>
+          └ <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+          │    │   │      │        └ functools.partial(<bound method CORSMiddleware.send of <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>>, ...
+          │    │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c980e0>
+          │    │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <starlette.middleware.exceptions.ExceptionMiddleware object at 0x7dbe5a4a04d0>
+          └ <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+          │                            │    │    │     │      │        └ functools.partial(<bound method CORSMiddleware.send of <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>>, ...
+          │                            │    │    │     │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c980e0>
+          │                            │    │    │     └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │                            │    │    └ <starlette.requests.Request object at 0x7dbe582e2a10>
+          │                            │    └ <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>
+          │                            └ <starlette.middleware.exceptions.ExceptionMiddleware object at 0x7dbe5a4a04d0>
+          └ <function wrap_app_handling_exceptions at 0x7dbedf33ed40>
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+          │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe582ddf80>
+          │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c980e0>
+          │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          └ <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+          │    │                │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe582ddf80>
+          │    │                │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c980e0>
+          │    │                └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <bound method Router.app of <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>>
+          └ <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+          │     │      │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe582ddf80>
+          │     │      │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c980e0>
+          │     │      └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │     └ <function Route.handle at 0x7dbedf18c400>
+          └ APIRoute(path='/api/v1/voice/process', name='process_voice', methods=['POST'])
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+          │    │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe582ddf80>
+          │    │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c980e0>
+          │    │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <function request_response.<locals>.app at 0x7dbe58bffa60>
+          └ APIRoute(path='/api/v1/voice/process', name='process_voice', methods=['POST'])
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+          │                            │    │        │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe582ddf80>
+          │                            │    │        │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c980e0>
+          │                            │    │        └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │                            │    └ <starlette.requests.Request object at 0x7dbe582e3b50>
+          │                            └ <function request_response.<locals>.app.<locals>.app at 0x7dbe582ddee0>
+          └ <function wrap_app_handling_exceptions at 0x7dbedf33ed40>
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+          │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe582dcf40>
+          │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c980e0>
+          │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          └ <function request_response.<locals>.app.<locals>.app at 0x7dbe582ddee0>
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+                     │ └ <starlette.requests.Request object at 0x7dbe582e3b50>
+                     └ <function get_request_handler.<locals>.app at 0x7dbe58bff920>
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                         └ <function run_endpoint_function at 0x7dbee146f560>
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+                 │         │      └ {'db': <sqlalchemy.orm.session.Session object at 0x7dbe582e3650>, 'current_user': <app.models.user_model.User object at 0x7db...
+                 │         └ <function process_voice at 0x7dbedb23d8a0>
+                 └ Dependant(path_params=[], query_params=[], header_params=[], cookie_params=[], body_params=[ModelField(field_info=File(Pydant...
+
+  File "/app/app/modules/voice/routes.py", line 35, in process_voice
+    result = await VoiceController.process_voice(db, current_user.id, file_path)
+                   │               │             │   │            │   └ 'app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm'
+                   │               │             │   │            └ <sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x7dbedb20ede0>
+                   │               │             │   └ <app.models.user_model.User object at 0x7dbe582f8810>
+                   │               │             └ <sqlalchemy.orm.session.Session object at 0x7dbe582e3650>
+                   │               └ <staticmethod(<function VoiceController.process_voice at 0x7dbeda139260>)>
+                   └ <class 'app.modules.voice.controller.VoiceController'>
+
+  File "/app/app/modules/voice/controller.py", line 17, in process_voice
+    return await VoicePipeline.process_voice(
+                 │             └ <staticmethod(<function VoicePipeline.process_voice at 0x7dbed8752d40>)>
+                 └ <class 'app.modules.voice.pipeline.VoicePipeline'>
+
+  File "/app/app/modules/voice/pipeline.py", line 57, in process_voice
+    await AudioPreprocessingService.reduce_noise(
+          │                         └ <staticmethod(<function AudioPreprocessingService.reduce_noise at 0x7dbed863afc0>)>
+          └ <class 'app.services.audio_preprocessing_service.AudioPreprocessingService'>
+
+> File "/app/app/services/audio_preprocessing_service.py", line 22, in reduce_noise
+    audio_data, sample_rate = librosa.load(
+                              └ <module 'librosa' from '/usr/local/lib/python3.11/site-packages/librosa/__init__.py'>
+
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 184, in load
+    y, sr_native = __audioread_load(path, offset, duration, dtype)
+                   │                │     │       │         └ <class 'numpy.float32'>
+                   │                │     │       └ None
+                   │                │     └ 0.0
+                   │                └ 'app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm'
+                   └ <function __audioread_load at 0x7dbe5124c180>
+  File "/usr/local/lib/python3.11/site-packages/decorator/__init__.py", line 247, in fun
+    return caller(func, *(extras + args), **kw)
+           │      │       │        │        └ {}
+           │      │       │        └ ('app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm', 0.0, None, <class 'numpy.float32'>)
+           │      │       └ ()
+           │      └ <function __audioread_load at 0x7dbe5124c040>
+           └ <function deprecated.<locals>.__wrapper at 0x7dbe512dbec0>
+  File "/usr/local/lib/python3.11/site-packages/librosa/util/decorators.py", line 63, in __wrapper
+    return func(*args, **kwargs)
+           │     │       └ {}
+           │     └ ('app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm', 0.0, None, <class 'numpy.float32'>)
+           └ <function __audioread_load at 0x7dbe5124c040>
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 240, in __audioread_load
+    reader = audioread.audio_open(path)
+             │         │          └ 'app/temp_audio/da916e66-a844-447a-8866-de3efd38786f.webm'
+             │         └ <function audio_open at 0x7dbe58300040>
+             └ <module 'audioread' from '/usr/local/lib/python3.11/site-packages/audioread/__init__.py'>
+  File "/usr/local/lib/python3.11/site-packages/audioread/__init__.py", line 131, in audio_open
+    raise NoBackendError()
+          └ <class 'audioread.exceptions.NoBackendError'>
+
+audioread.exceptions.NoBackendError
+2026-05-26 21:04:07.351 | INFO     | app.modules.voice.pipeline:process_voice:70 - VOICE MODULE: 2. Transcripción completada:
+2026-05-26 21:04:07.352 | INFO     | app.modules.voice.pipeline:process_voice:76 - VOICE MODULE: 3. Enviando texto a Gemini:
+2026-05-26 21:04:07.363 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 21:04:08.923 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 21:04:08.927 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 21:04:08.929 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 21:04:08.953 | INFO     | app.modules.voice.pipeline:process_voice:87 - VOICE MODULE: 4. Gemini respondió:
+2026-05-26 21:04:08.954 | INFO     | app.modules.voice.pipeline:process_voice:141 - VOICE MODULE: 5. Generando audio TTS:
+2026-05-26 21:04:10.369 | INFO     | app.modules.voice.pipeline:process_voice:154 - VOICE MODULE: 6. Audio generado:
+2026-05-26 21:04:10.379 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/voice/process 200 10.1881s
+2026-05-26 21:04:10.379 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 10.1889s
+2026-05-26 21:04:10.404 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0077s
+2026-05-26 21:04:10.405 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0086s
+2026-05-26 21:04:12.024 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/voice/tts 200 1.6073s
+2026-05-26 21:04:12.026 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.6096s
+2026-05-26 21:05:03.498 | INFO     | app.modules.voice.pipeline:process_voice:48 - VOICE MODULE: 1. Iniciando transcripción:
+2026-05-26 21:05:03.499 | INFO     | app.services.audio_preprocessing_service:reduce_noise:15 - Preprocessing audio: app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm
+2026-05-26 21:05:03.537 | ERROR    | app.services.audio_preprocessing_service:reduce_noise:55 - Audio preprocessing failed
+Traceback (most recent call last):
+
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 176, in load
+    y, sr_native = __soundfile_load(path, offset, duration, dtype)
+                   │                │     │       │         └ <class 'numpy.float32'>
+                   │                │     │       └ None
+                   │                │     └ 0.0
+                   │                └ 'app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm'
+                   └ <function __soundfile_load at 0x7dbe512dbe20>
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 209, in __soundfile_load
+    context = sf.SoundFile(path)
+              │  │         └ 'app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm'
+              │  └ <class 'soundfile.SoundFile'>
+              └ <module 'soundfile' from '/usr/local/lib/python3.11/site-packages/soundfile.py'>
+  File "/usr/local/lib/python3.11/site-packages/soundfile.py", line 690, in __init__
+    self._file = self._open(file, mode_int, closefd)
+    │    │       │    │     │     │         └ True
+    │    │       │    │     │     └ 16
+    │    │       │    │     └ 'app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm'
+    │    │       │    └ <function SoundFile._open at 0x7dbed868f600>
+    │    │       └ SoundFile('app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm', mode='r', samplerate=0, channels=0, format='FILE', subt...
+    │    └ None
+    └ SoundFile('app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm', mode='r', samplerate=0, channels=0, format='FILE', subt...
+  File "/usr/local/lib/python3.11/site-packages/soundfile.py", line 1265, in _open
+    raise LibsndfileError(err, prefix="Error opening {0!r}: ".format(self.name))
+          │               │                                          │    └ <property object at 0x7dbed867f790>
+          │               │                                          └ SoundFile('app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm', mode='r', samplerate=0, channels=0, format='FILE', subt...
+          │               └ 1
+          └ <class 'soundfile.LibsndfileError'>
+
+soundfile.LibsndfileError: Error opening 'app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm': Format not recognised.
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "/usr/local/bin/uvicorn", line 6, in <module>
+    sys.exit(main())
+    │   │    └ <Command main>
+    │   └ <built-in function exit>
+    └ <module 'sys' (built-in)>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1524, in __call__
+    return self.main(*args, **kwargs)
+           │    │     │       └ {}
+           │    │     └ ()
+           │    └ <function Command.main at 0x7dbee0458860>
+           └ <Command main>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1445, in main
+    rv = self.invoke(ctx)
+         │    │      └ <click.core.Context object at 0x7dbee13ad490>
+         │    └ <function Command.invoke at 0x7dbee0458ae0>
+         └ <Command main>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1308, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           │   │      │    │           │   └ {'host': '0.0.0.0', 'port': 8000, 'app': 'app.main:app', 'uds': None, 'fd': None, 'reload': False, 'reload_dirs': (), 'reload...
+           │   │      │    │           └ <click.core.Context object at 0x7dbee13ad490>
+           │   │      │    └ <function main at 0x7dbee00598a0>
+           │   │      └ <Command main>
+           │   └ <function Context.invoke at 0x7dbee04598a0>
+           └ <click.core.Context object at 0x7dbee13ad490>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 877, in invoke
+    return callback(*args, **kwargs)
+           │         │       └ {'host': '0.0.0.0', 'port': 8000, 'app': 'app.main:app', 'uds': None, 'fd': None, 'reload': False, 'reload_dirs': (), 'reload...
+           │         └ ()
+           └ <function main at 0x7dbee00598a0>
+  File "/usr/local/lib/python3.11/site-packages/uvicorn/main.py", line 410, in main
+    run(
+    └ <function run at 0x7dbee0320900>
+  File "/usr/local/lib/python3.11/site-packages/uvicorn/main.py", line 577, in run
+    server.run()
+    │      └ <function Server.run at 0x7dbee0323600>
+    └ <uvicorn.server.Server object at 0x7dbee02db250>
+  File "/usr/local/lib/python3.11/site-packages/uvicorn/server.py", line 65, in run
+    return asyncio.run(self.serve(sockets=sockets))
+           │       │   │    │             └ None
+           │       │   │    └ <function Server.serve at 0x7dbee03236a0>
+           │       │   └ <uvicorn.server.Server object at 0x7dbee02db250>
+           │       └ <function run at 0x7dbee1100d60>
+           └ <module 'asyncio' from '/usr/local/lib/python3.11/asyncio/__init__.py'>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object Server.serve at 0x7dbee005ca90>
+           │      └ <function Runner.run at 0x7dbee0658b80>
+           └ <asyncio.runners.Runner object at 0x7dbee00a69d0>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<Server.serve() running at /usr/local/lib/python3.11/site-packages/uvicorn/server.py:69> wai...
+           │    │     └ <cyfunction Loop.run_until_complete at 0x7dbee02ab100>
+           │    └ <uvloop.Loop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7dbee00a69d0>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+          │    │   │      │                      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7dbe582de0c0>
+          │    │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe582dde40>
+          │    │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>
+          └ <app.middleware.logging_middleware.LoggingMiddleware object at 0x7dbe5a4746d0>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+          │    │               │      │        │                     └ Headers({'host': 'backend:8000', 'connection': 'close', 'content-length': '126952', 'sec-ch-ua-platform': '"Windows"', 'autho...
+          │    │               │      │        └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7dbe582de0c0>
+          │    │               │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe582dde40>
+          │    │               └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <function CORSMiddleware.simple_response at 0x7dbedf22fba0>
+          └ <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+          │    │   │      │        └ functools.partial(<bound method CORSMiddleware.send of <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>>, ...
+          │    │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe582dde40>
+          │    │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <starlette.middleware.exceptions.ExceptionMiddleware object at 0x7dbe5a4a04d0>
+          └ <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+          │                            │    │    │     │      │        └ functools.partial(<bound method CORSMiddleware.send of <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>>, ...
+          │                            │    │    │     │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe582dde40>
+          │                            │    │    │     └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │                            │    │    └ <starlette.requests.Request object at 0x7dbe42f03150>
+          │                            │    └ <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>
+          │                            └ <starlette.middleware.exceptions.ExceptionMiddleware object at 0x7dbe5a4a04d0>
+          └ <function wrap_app_handling_exceptions at 0x7dbedf33ed40>
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+          │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c91e40>
+          │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe582dde40>
+          │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          └ <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+          │    │                │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c91e40>
+          │    │                │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe582dde40>
+          │    │                └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <bound method Router.app of <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>>
+          └ <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+          │     │      │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c91e40>
+          │     │      │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe582dde40>
+          │     │      └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │     └ <function Route.handle at 0x7dbedf18c400>
+          └ APIRoute(path='/api/v1/voice/process', name='process_voice', methods=['POST'])
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+          │    │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c91e40>
+          │    │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe582dde40>
+          │    │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <function request_response.<locals>.app at 0x7dbe58bffa60>
+          └ APIRoute(path='/api/v1/voice/process', name='process_voice', methods=['POST'])
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+          │                            │    │        │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c91e40>
+          │                            │    │        │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe582dde40>
+          │                            │    │        └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │                            │    └ <starlette.requests.Request object at 0x7dbe42f01ed0>
+          │                            └ <function request_response.<locals>.app.<locals>.app at 0x7dbe42c92ac0>
+          └ <function wrap_app_handling_exceptions at 0x7dbedf33ed40>
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+          │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c909a0>
+          │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe582dde40>
+          │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          └ <function request_response.<locals>.app.<locals>.app at 0x7dbe42c92ac0>
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+                     │ └ <starlette.requests.Request object at 0x7dbe42f01ed0>
+                     └ <function get_request_handler.<locals>.app at 0x7dbe58bff920>
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                         └ <function run_endpoint_function at 0x7dbee146f560>
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+                 │         │      └ {'db': <sqlalchemy.orm.session.Session object at 0x7dbe50434210>, 'current_user': <app.models.user_model.User object at 0x7db...
+                 │         └ <function process_voice at 0x7dbedb23d8a0>
+                 └ Dependant(path_params=[], query_params=[], header_params=[], cookie_params=[], body_params=[ModelField(field_info=File(Pydant...
+
+  File "/app/app/modules/voice/routes.py", line 35, in process_voice
+    result = await VoiceController.process_voice(db, current_user.id, file_path)
+                   │               │             │   │            │   └ 'app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm'
+                   │               │             │   │            └ <sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x7dbedb20ede0>
+                   │               │             │   └ <app.models.user_model.User object at 0x7dbe50099c90>
+                   │               │             └ <sqlalchemy.orm.session.Session object at 0x7dbe50434210>
+                   │               └ <staticmethod(<function VoiceController.process_voice at 0x7dbeda139260>)>
+                   └ <class 'app.modules.voice.controller.VoiceController'>
+
+  File "/app/app/modules/voice/controller.py", line 17, in process_voice
+    return await VoicePipeline.process_voice(
+                 │             └ <staticmethod(<function VoicePipeline.process_voice at 0x7dbed8752d40>)>
+                 └ <class 'app.modules.voice.pipeline.VoicePipeline'>
+
+  File "/app/app/modules/voice/pipeline.py", line 57, in process_voice
+    await AudioPreprocessingService.reduce_noise(
+          │                         └ <staticmethod(<function AudioPreprocessingService.reduce_noise at 0x7dbed863afc0>)>
+          └ <class 'app.services.audio_preprocessing_service.AudioPreprocessingService'>
+
+> File "/app/app/services/audio_preprocessing_service.py", line 22, in reduce_noise
+    audio_data, sample_rate = librosa.load(
+                              └ <module 'librosa' from '/usr/local/lib/python3.11/site-packages/librosa/__init__.py'>
+
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 184, in load
+    y, sr_native = __audioread_load(path, offset, duration, dtype)
+                   │                │     │       │         └ <class 'numpy.float32'>
+                   │                │     │       └ None
+                   │                │     └ 0.0
+                   │                └ 'app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm'
+                   └ <function __audioread_load at 0x7dbe5124c180>
+  File "/usr/local/lib/python3.11/site-packages/decorator/__init__.py", line 247, in fun
+    return caller(func, *(extras + args), **kw)
+           │      │       │        │        └ {}
+           │      │       │        └ ('app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm', 0.0, None, <class 'numpy.float32'>)
+           │      │       └ ()
+           │      └ <function __audioread_load at 0x7dbe5124c040>
+           └ <function deprecated.<locals>.__wrapper at 0x7dbe512dbec0>
+  File "/usr/local/lib/python3.11/site-packages/librosa/util/decorators.py", line 63, in __wrapper
+    return func(*args, **kwargs)
+           │     │       └ {}
+           │     └ ('app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm', 0.0, None, <class 'numpy.float32'>)
+           └ <function __audioread_load at 0x7dbe5124c040>
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 240, in __audioread_load
+    reader = audioread.audio_open(path)
+             │         │          └ 'app/temp_audio/3d3dfc5c-f0b0-45bb-a62f-981caec89580.webm'
+             │         └ <function audio_open at 0x7dbe58300040>
+             └ <module 'audioread' from '/usr/local/lib/python3.11/site-packages/audioread/__init__.py'>
+  File "/usr/local/lib/python3.11/site-packages/audioread/__init__.py", line 131, in audio_open
+    raise NoBackendError()
+          └ <class 'audioread.exceptions.NoBackendError'>
+
+audioread.exceptions.NoBackendError
+2026-05-26 21:05:04.832 | INFO     | app.modules.voice.pipeline:process_voice:70 - VOICE MODULE: 2. Transcripción completada:
+2026-05-26 21:05:04.833 | INFO     | app.modules.voice.pipeline:process_voice:76 - VOICE MODULE: 3. Enviando texto a Gemini:
+2026-05-26 21:05:04.841 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 21:05:07.821 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 21:05:07.824 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 21:05:07.824 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 21:05:07.863 | INFO     | app.modules.voice.pipeline:process_voice:87 - VOICE MODULE: 4. Gemini respondió:
+2026-05-26 21:05:07.864 | INFO     | app.modules.voice.pipeline:process_voice:141 - VOICE MODULE: 5. Generando audio TTS:
+2026-05-26 21:05:09.444 | INFO     | app.modules.voice.pipeline:process_voice:154 - VOICE MODULE: 6. Audio generado:
+2026-05-26 21:05:09.451 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/voice/process 200 5.9819s
+2026-05-26 21:05:09.452 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 5.9834s
+2026-05-26 21:05:09.483 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0061s
+2026-05-26 21:05:09.483 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0068s
+2026-05-26 21:12:44.802 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 21:12:46.266 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 21:12:46.269 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 21:12:46.271 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 21:12:46.320 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.8550s
+2026-05-26 21:12:46.322 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.8646s
+2026-05-26 21:12:46.357 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0135s
+2026-05-26 21:12:46.358 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0143s
+2026-05-26 21:12:55.969 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 21:12:57.108 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 21:12:57.109 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 21:12:57.110 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 21:12:57.116 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.1624s
+2026-05-26 21:12:57.118 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.1645s
+2026-05-26 21:12:57.138 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0057s
+2026-05-26 21:12:57.139 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0069s
+2026-05-26 21:13:04.972 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 21:13:06.204 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 21:13:06.206 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 21:13:06.207 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 21:13:06.215 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.2576s
+2026-05-26 21:13:06.216 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.2583s
+2026-05-26 21:13:06.238 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0063s
+2026-05-26 21:13:06.239 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0073s
+2026-05-26 21:13:31.588 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/metrics/dashboard 200 0.0019s
+2026-05-26 21:13:31.590 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0035s
+2026-05-26 21:13:31.595 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/metrics/dashboard 200 0.0005s
+2026-05-26 21:13:31.596 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0014s
+2026-05-26 21:16:48.625 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0133s
+2026-05-26 21:16:48.633 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0212s
+2026-05-26 21:16:48.646 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0043s
+2026-05-26 21:16:48.648 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0065s
+2026-05-26 21:25:39.058 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0215s
+2026-05-26 21:25:39.060 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0231s
+2026-05-26 21:25:39.075 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0065s
+2026-05-26 21:25:39.076 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0072s
+2026-05-26 21:25:39.876 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0062s
+2026-05-26 21:25:39.877 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0073s
+2026-05-26 21:25:39.892 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0061s
+2026-05-26 21:25:39.892 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0068s
+2026-05-26 21:25:43.610 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/auth/me 200 0.0040s
+2026-05-26 21:25:43.611 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0048s
+2026-05-26 21:25:43.651 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0057s
+2026-05-26 21:25:43.652 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0067s
+2026-05-26 21:25:43.667 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0066s
+2026-05-26 21:25:43.668 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0075s
+2026-05-26 21:28:57.481 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/auth/me 200 0.0047s
+2026-05-26 21:28:57.482 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0056s
+2026-05-26 21:28:57.523 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0045s
+2026-05-26 21:28:57.524 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0058s
+2026-05-26 21:28:57.537 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0054s
+2026-05-26 21:28:57.538 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0063s
+2026-05-26 21:28:58.898 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/metrics/dashboard 200 0.0011s
+2026-05-26 21:28:58.898 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0019s
+2026-05-26 21:28:58.906 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/metrics/dashboard 200 0.0006s
+2026-05-26 21:28:58.907 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0018s
+2026-05-26 21:29:50.013 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0077s
+2026-05-26 21:29:50.015 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0091s
+2026-05-26 21:29:50.027 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0047s
+2026-05-26 21:29:50.030 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0082s
+2026-05-26 23:20:25.149 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 401 0.1834s
+2026-05-26 23:20:25.171 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.2172s
+2026-05-26 23:20:25.196 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 401 0.0046s
+2026-05-26 23:20:25.198 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0063s
+2026-05-26 23:20:31.725 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/auth/me 200 0.0561s
+2026-05-26 23:20:31.726 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0575s
+2026-05-26 23:20:31.774 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0144s
+2026-05-26 23:20:31.775 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0153s
+2026-05-26 23:20:31.791 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0079s
+2026-05-26 23:20:31.791 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0088s
+2026-05-26 23:20:39.943 | INFO     | app.modules.voice.pipeline:process_voice:48 - VOICE MODULE: 1. Iniciando transcripción:
+2026-05-26 23:20:39.945 | INFO     | app.services.audio_preprocessing_service:reduce_noise:15 - Preprocessing audio: app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm
+2026-05-26 23:20:40.007 | ERROR    | app.services.audio_preprocessing_service:reduce_noise:55 - Audio preprocessing failed
+Traceback (most recent call last):
+
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 176, in load
+    y, sr_native = __soundfile_load(path, offset, duration, dtype)
+                   │                │     │       │         └ <class 'numpy.float32'>
+                   │                │     │       └ None
+                   │                │     └ 0.0
+                   │                └ 'app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm'
+                   └ <function __soundfile_load at 0x7dbe512dbe20>
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 209, in __soundfile_load
+    context = sf.SoundFile(path)
+              │  │         └ 'app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm'
+              │  └ <class 'soundfile.SoundFile'>
+              └ <module 'soundfile' from '/usr/local/lib/python3.11/site-packages/soundfile.py'>
+  File "/usr/local/lib/python3.11/site-packages/soundfile.py", line 690, in __init__
+    self._file = self._open(file, mode_int, closefd)
+    │    │       │    │     │     │         └ True
+    │    │       │    │     │     └ 16
+    │    │       │    │     └ 'app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm'
+    │    │       │    └ <function SoundFile._open at 0x7dbed868f600>
+    │    │       └ SoundFile('app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm', mode='r', samplerate=0, channels=0, format='FILE', subt...
+    │    └ None
+    └ SoundFile('app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm', mode='r', samplerate=0, channels=0, format='FILE', subt...
+  File "/usr/local/lib/python3.11/site-packages/soundfile.py", line 1265, in _open
+    raise LibsndfileError(err, prefix="Error opening {0!r}: ".format(self.name))
+          │               │                                          │    └ <property object at 0x7dbed867f790>
+          │               │                                          └ SoundFile('app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm', mode='r', samplerate=0, channels=0, format='FILE', subt...
+          │               └ 1
+          └ <class 'soundfile.LibsndfileError'>
+
+soundfile.LibsndfileError: Error opening 'app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm': Format not recognised.
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "/usr/local/bin/uvicorn", line 6, in <module>
+    sys.exit(main())
+    │   │    └ <Command main>
+    │   └ <built-in function exit>
+    └ <module 'sys' (built-in)>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1524, in __call__
+    return self.main(*args, **kwargs)
+           │    │     │       └ {}
+           │    │     └ ()
+           │    └ <function Command.main at 0x7dbee0458860>
+           └ <Command main>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1445, in main
+    rv = self.invoke(ctx)
+         │    │      └ <click.core.Context object at 0x7dbee13ad490>
+         │    └ <function Command.invoke at 0x7dbee0458ae0>
+         └ <Command main>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 1308, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           │   │      │    │           │   └ {'host': '0.0.0.0', 'port': 8000, 'app': 'app.main:app', 'uds': None, 'fd': None, 'reload': False, 'reload_dirs': (), 'reload...
+           │   │      │    │           └ <click.core.Context object at 0x7dbee13ad490>
+           │   │      │    └ <function main at 0x7dbee00598a0>
+           │   │      └ <Command main>
+           │   └ <function Context.invoke at 0x7dbee04598a0>
+           └ <click.core.Context object at 0x7dbee13ad490>
+  File "/usr/local/lib/python3.11/site-packages/click/core.py", line 877, in invoke
+    return callback(*args, **kwargs)
+           │         │       └ {'host': '0.0.0.0', 'port': 8000, 'app': 'app.main:app', 'uds': None, 'fd': None, 'reload': False, 'reload_dirs': (), 'reload...
+           │         └ ()
+           └ <function main at 0x7dbee00598a0>
+  File "/usr/local/lib/python3.11/site-packages/uvicorn/main.py", line 410, in main
+    run(
+    └ <function run at 0x7dbee0320900>
+  File "/usr/local/lib/python3.11/site-packages/uvicorn/main.py", line 577, in run
+    server.run()
+    │      └ <function Server.run at 0x7dbee0323600>
+    └ <uvicorn.server.Server object at 0x7dbee02db250>
+  File "/usr/local/lib/python3.11/site-packages/uvicorn/server.py", line 65, in run
+    return asyncio.run(self.serve(sockets=sockets))
+           │       │   │    │             └ None
+           │       │   │    └ <function Server.serve at 0x7dbee03236a0>
+           │       │   └ <uvicorn.server.Server object at 0x7dbee02db250>
+           │       └ <function run at 0x7dbee1100d60>
+           └ <module 'asyncio' from '/usr/local/lib/python3.11/asyncio/__init__.py'>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object Server.serve at 0x7dbee005ca90>
+           │      └ <function Runner.run at 0x7dbee0658b80>
+           └ <asyncio.runners.Runner object at 0x7dbee00a69d0>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<Server.serve() running at /usr/local/lib/python3.11/site-packages/uvicorn/server.py:69> wai...
+           │    │     └ <cyfunction Loop.run_until_complete at 0x7dbee02ab100>
+           │    └ <uvloop.Loop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7dbee00a69d0>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+          │    │   │      │                      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7dbe58c936a0>
+          │    │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c93a60>
+          │    │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>
+          └ <app.middleware.logging_middleware.LoggingMiddleware object at 0x7dbe5a4746d0>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+          │    │               │      │        │                     └ Headers({'host': 'backend:8000', 'connection': 'close', 'content-length': '43188', 'sec-ch-ua-platform': '"Windows"', 'author...
+          │    │               │      │        └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7dbe58c936a0>
+          │    │               │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c93a60>
+          │    │               └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <function CORSMiddleware.simple_response at 0x7dbedf22fba0>
+          └ <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+          │    │   │      │        └ functools.partial(<bound method CORSMiddleware.send of <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>>, ...
+          │    │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c93a60>
+          │    │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <starlette.middleware.exceptions.ExceptionMiddleware object at 0x7dbe5a4a04d0>
+          └ <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+          │                            │    │    │     │      │        └ functools.partial(<bound method CORSMiddleware.send of <starlette.middleware.cors.CORSMiddleware object at 0x7dbe5a484990>>, ...
+          │                            │    │    │     │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c93a60>
+          │                            │    │    │     └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │                            │    │    └ <starlette.requests.Request object at 0x7dbe42cb6450>
+          │                            │    └ <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>
+          │                            └ <starlette.middleware.exceptions.ExceptionMiddleware object at 0x7dbe5a4a04d0>
+          └ <function wrap_app_handling_exceptions at 0x7dbedf33ed40>
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+          │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c90860>
+          │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c93a60>
+          │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          └ <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+          │    │                │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c90860>
+          │    │                │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c93a60>
+          │    │                └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <bound method Router.app of <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>>
+          └ <fastapi.routing.APIRouter object at 0x7dbe5a4c7050>
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+          │     │      │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c90860>
+          │     │      │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c93a60>
+          │     │      └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │     └ <function Route.handle at 0x7dbedf18c400>
+          └ APIRoute(path='/api/v1/voice/process', name='process_voice', methods=['POST'])
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+          │    │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c90860>
+          │    │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c93a60>
+          │    │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │    └ <function request_response.<locals>.app at 0x7dbe58bffa60>
+          └ APIRoute(path='/api/v1/voice/process', name='process_voice', methods=['POST'])
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+          │                            │    │        │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c90860>
+          │                            │    │        │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c93a60>
+          │                            │    │        └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          │                            │    └ <starlette.requests.Request object at 0x7dbe42cb7690>
+          │                            └ <function request_response.<locals>.app.<locals>.app at 0x7dbe42c91d00>
+          └ <function wrap_app_handling_exceptions at 0x7dbedf33ed40>
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+          │   │      │        └ <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7dbe42c92e80>
+          │   │      └ <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7dbe58c93a60>
+          │   └ {'type': 'http', 'asgi': {'version': '3.0', 'spec_version': '2.4'}, 'http_version': '1.1', 'server': ('172.18.0.3', 8000), 'c...
+          └ <function request_response.<locals>.app.<locals>.app at 0x7dbe42c91d00>
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+                     │ └ <starlette.requests.Request object at 0x7dbe42cb7690>
+                     └ <function get_request_handler.<locals>.app at 0x7dbe58bff920>
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                         └ <function run_endpoint_function at 0x7dbee146f560>
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+                 │         │      └ {'db': <sqlalchemy.orm.session.Session object at 0x7dbe42cb42d0>, 'current_user': <app.models.user_model.User object at 0x7db...
+                 │         └ <function process_voice at 0x7dbedb23d8a0>
+                 └ Dependant(path_params=[], query_params=[], header_params=[], cookie_params=[], body_params=[ModelField(field_info=File(Pydant...
+
+  File "/app/app/modules/voice/routes.py", line 35, in process_voice
+    result = await VoiceController.process_voice(db, current_user.id, file_path)
+                   │               │             │   │            │   └ 'app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm'
+                   │               │             │   │            └ <sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x7dbedb20ede0>
+                   │               │             │   └ <app.models.user_model.User object at 0x7dbe42ef1fd0>
+                   │               │             └ <sqlalchemy.orm.session.Session object at 0x7dbe42cb42d0>
+                   │               └ <staticmethod(<function VoiceController.process_voice at 0x7dbeda139260>)>
+                   └ <class 'app.modules.voice.controller.VoiceController'>
+
+  File "/app/app/modules/voice/controller.py", line 17, in process_voice
+    return await VoicePipeline.process_voice(
+                 │             └ <staticmethod(<function VoicePipeline.process_voice at 0x7dbed8752d40>)>
+                 └ <class 'app.modules.voice.pipeline.VoicePipeline'>
+
+  File "/app/app/modules/voice/pipeline.py", line 57, in process_voice
+    await AudioPreprocessingService.reduce_noise(
+          │                         └ <staticmethod(<function AudioPreprocessingService.reduce_noise at 0x7dbed863afc0>)>
+          └ <class 'app.services.audio_preprocessing_service.AudioPreprocessingService'>
+
+> File "/app/app/services/audio_preprocessing_service.py", line 22, in reduce_noise
+    audio_data, sample_rate = librosa.load(
+                              └ <module 'librosa' from '/usr/local/lib/python3.11/site-packages/librosa/__init__.py'>
+
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 184, in load
+    y, sr_native = __audioread_load(path, offset, duration, dtype)
+                   │                │     │       │         └ <class 'numpy.float32'>
+                   │                │     │       └ None
+                   │                │     └ 0.0
+                   │                └ 'app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm'
+                   └ <function __audioread_load at 0x7dbe5124c180>
+  File "/usr/local/lib/python3.11/site-packages/decorator/__init__.py", line 247, in fun
+    return caller(func, *(extras + args), **kw)
+           │      │       │        │        └ {}
+           │      │       │        └ ('app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm', 0.0, None, <class 'numpy.float32'>)
+           │      │       └ ()
+           │      └ <function __audioread_load at 0x7dbe5124c040>
+           └ <function deprecated.<locals>.__wrapper at 0x7dbe512dbec0>
+  File "/usr/local/lib/python3.11/site-packages/librosa/util/decorators.py", line 63, in __wrapper
+    return func(*args, **kwargs)
+           │     │       └ {}
+           │     └ ('app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm', 0.0, None, <class 'numpy.float32'>)
+           └ <function __audioread_load at 0x7dbe5124c040>
+  File "/usr/local/lib/python3.11/site-packages/librosa/core/audio.py", line 240, in __audioread_load
+    reader = audioread.audio_open(path)
+             │         │          └ 'app/temp_audio/2c0bd98b-27ee-4c78-80bc-ba156d424da7.webm'
+             │         └ <function audio_open at 0x7dbe58300040>
+             └ <module 'audioread' from '/usr/local/lib/python3.11/site-packages/audioread/__init__.py'>
+  File "/usr/local/lib/python3.11/site-packages/audioread/__init__.py", line 131, in audio_open
+    raise NoBackendError()
+          └ <class 'audioread.exceptions.NoBackendError'>
+
+audioread.exceptions.NoBackendError
+2026-05-26 23:20:41.208 | INFO     | app.modules.voice.pipeline:process_voice:70 - VOICE MODULE: 2. Transcripción completada:
+2026-05-26 23:20:41.209 | INFO     | app.modules.voice.pipeline:process_voice:76 - VOICE MODULE: 3. Enviando texto a Gemini:
+2026-05-26 23:20:41.227 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:20:42.815 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:20:42.817 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:20:42.817 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:20:42.854 | INFO     | app.modules.voice.pipeline:process_voice:87 - VOICE MODULE: 4. Gemini respondió:
+2026-05-26 23:20:42.855 | INFO     | app.modules.voice.pipeline:process_voice:141 - VOICE MODULE: 5. Generando audio TTS:
+2026-05-26 23:20:44.478 | INFO     | app.modules.voice.pipeline:process_voice:154 - VOICE MODULE: 6. Audio generado:
+2026-05-26 23:20:44.498 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/voice/process 200 4.6376s
+2026-05-26 23:20:44.498 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 4.6389s
+2026-05-26 23:20:44.519 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0065s
+2026-05-26 23:20:44.520 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0076s
+2026-05-26 23:20:45.939 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/voice/tts 200 1.4097s
+2026-05-26 23:20:45.940 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.4105s
+2026-05-26 23:21:02.248 | INFO     | app.modules.conversation.service:process_message:176 - CONVERSATION MODULE: Se creó el Prompt exitósamente.
+2026-05-26 23:21:03.434 | INFO     | app.modules.conversation.service:process_message:186 - CONVERSATION MODULE: Se obtuvo una respuesta del LLM.
+2026-05-26 23:21:03.435 | INFO     | app.modules.conversation.service:process_message:234 - CONVERSATION MODULE: Se parseó la respuesta del LLM.
+2026-05-26 23:21:03.436 | INFO     | app.modules.conversation.service:process_message:236 - CONVERSATION MODULE: Conversación terminada con el LLM.
+2026-05-26 23:21:03.452 | INFO     | app.middleware.logging_middleware:dispatch:18 - POST /api/v1/conversation/process 200 1.2168s
+2026-05-26 23:21:03.453 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 1.2183s
+2026-05-26 23:21:03.469 | INFO     | app.middleware.logging_middleware:dispatch:18 - GET /api/v1/tasks/ 200 0.0056s
+2026-05-26 23:21:03.470 | INFO     | app.middleware.metrics_middleware:dispatch:24 - Request took 0.0067s
