@@ -65,11 +65,11 @@ Para ver los contenedores levantados puedes usar el comando
 ```
 docker ps
 ```
-<img width="1211" height="141" alt="image" src="https://github.com/user-attachments/assets/a0650d40-ba51-432f-a848-c36339f7f9c1" />
+<img width="1197" height="163" alt="{3DBAC452-0733-419D-A3CD-2C9967848CBB}" src="https://github.com/user-attachments/assets/0fb8d17a-3109-46f0-9b45-4c22f386eed4" />
 
 5. Accede a la aplicación:
 
-* Frontend: http://localhost:80
+* Frontend: http://localhost:5173
 * API: http://localhost:8000/docs
 
 ---
