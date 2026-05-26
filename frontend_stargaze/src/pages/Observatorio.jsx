@@ -33,22 +33,28 @@ const DECO_PLANETS = [
 /* ── Detect task-list intent from user message ── */
 function detectTaskListIntent(text) {
   const t = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  if (/\bhoy\b/.test(t))    return { match: true, daysAhead: 0, label: 'hoy' };
-  if (/\bmanana\b/.test(t)) return { match: true, daysAhead: 1, label: 'mañana' };
+  // Si el usuario está CREANDO una tarea/cita, no es una consulta de lista
+  if (/(agendame|agenda(?:me)?|crea(?:me)?|a[nñ]ade|agrega(?:me)?|ponme|pon\s+una|registra|nueva?\s+(cita|tarea)|program)/.test(t)) {
+    return { match: false, startDay: 0, daysAhead: 0, label: '' };
+  }
+  if (/\bhoy\b/.test(t))    return { match: true, startDay: 0, daysAhead: 0, label: 'hoy' };
+  if (/\bmanana\b/.test(t)) return { match: true, startDay: 1, daysAhead: 1, label: 'mañana' };
   const m = t.match(/(?:proximos?|siguientes?)\s+(\d+)\s+dias?/);
-  if (m) return { match: true, daysAhead: parseInt(m[1]), label: `los próximos ${m[1]} días` };
-  if (/esta\s+semana/.test(t)) return { match: true, daysAhead: 7, label: 'esta semana' };
+  if (m) return { match: true, startDay: 0, daysAhead: parseInt(m[1]), label: `los próximos ${m[1]} días` };
+  if (/esta\s+semana/.test(t)) return { match: true, startDay: 0, daysAhead: 7, label: 'esta semana' };
   if (
-    /(citas?|tareas?|pendientes?|actividades?|agenda|compromisos?)/.test(t) &&
+    /(lista|muestr|cu[aá]ntas?|cu[aá]les?|que\s+(citas?|tareas?)|tengo\s+(hoy|manana|esta))/.test(t) &&
     /(hoy|manana|semana|dias?|prox)/.test(t)
-  ) return { match: true, daysAhead: 3, label: 'los próximos días' };
-  return { match: false, daysAhead: 0, label: '' };
+  ) return { match: true, startDay: 0, daysAhead: 3, label: 'los próximos días' };
+  return { match: false, startDay: 0, daysAhead: 0, label: '' };
 }
 
 /* ── Filter tasks into a time window ────────────── */
-function getTasksForDays(tasks, daysAhead) {
+function getTasksForDays(tasks, daysAhead, startDay = 0) {
   const now          = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const filterStart  = new Date(startOfToday);
+  filterStart.setDate(filterStart.getDate() + startDay);
   const endDate      = new Date(startOfToday);
   endDate.setDate(endDate.getDate() + daysAhead + 1);
 
@@ -58,7 +64,7 @@ function getTasksForDays(tasks, daysAhead) {
       t.due_date && t.due_date !== 'None' && t.due_date !== 'null'
     )
     .map(t => ({ ...t, _date: new Date(t.due_date) }))
-    .filter(t => !isNaN(t._date) && t._date >= startOfToday && t._date < endDate)
+    .filter(t => !isNaN(t._date) && t._date >= filterStart && t._date < endDate)
     .sort((a, b) => a._date - b._date);
 }
 
@@ -98,12 +104,12 @@ function formatTaskDate(raw) {
   try {
     const d = new Date(raw);
     if (isNaN(d)) return null;
-    const h = d.getHours() % 12 || 12;
-    const min = d.getMinutes().toString().padStart(2, '0');
+    const h    = d.getHours() % 12 || 12;
+    const min  = d.getMinutes().toString().padStart(2, '0');
     const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
-    const day = d.getDate().toString().padStart(2, '0');
+    const day  = d.getDate().toString().padStart(2, '0');
     const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const year = d.getFullYear().toString().slice(-2);
+    const year  = d.getFullYear().toString().slice(-2);
     return `${h}:${min} ${ampm} · ${day}/${month}/${year}`;
   } catch { return null; }
 }
@@ -136,7 +142,7 @@ function PlanetCard({ task, selected, onSelect }) {
       <div className="obs-planet-body">
         <p className="obs-planet-title">{task.title}</p>
         {task.description && <p className="obs-planet-desc">{task.description}</p>}
-        {!task.description && dateStr && <p className="obs-planet-date">{dateStr}</p>}
+        {dateStr && <p className="obs-planet-date">{dateStr}</p>}
       </div>
     </div>
   );
@@ -243,10 +249,12 @@ export default function Observatorio() {
   const [chatMicMode,  setChatMicMode] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
 
-  const containerRef = useRef(null);
-  const audioRef     = useRef(null);
-  const chatEndRef   = useRef(null);
-  const inputRef     = useRef(null);
+  const containerRef    = useRef(null);
+  const audioRef        = useRef(null);
+  const chatEndRef      = useRef(null);
+  const inputRef        = useRef(null);
+  const chatRecorderRef = useRef(null);
+  const chatChunksRef   = useRef([]);
 
   const addMsg = useCallback((role, text, isAudio = false) => {
     setMessages(prev => [...prev, { id: Date.now() + Math.random(), role, text, isAudio }]);
@@ -294,6 +302,7 @@ export default function Observatorio() {
     } catch {}
   }, []);
 
+  /* ── Mic orbital ── */
   const { isRecording, start, stop } = useVoiceRecorder(async (blob) => {
     if (chatMicMode) return;
     setAiStatus('processing');
@@ -334,7 +343,7 @@ export default function Observatorio() {
           : tasks;
         setTasks(freshTasks);
 
-        const filtered = getTasksForDays(freshTasks, intent.daysAhead);
+        const filtered = getTasksForDays(freshTasks, intent.daysAhead, intent.startDay);
 
         if (filtered.length === 0) {
           const empty = `No encontré tareas pendientes para ${intent.label} 🎉`;
@@ -369,49 +378,107 @@ export default function Observatorio() {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendText(); }
   };
 
-  const chatRecorderRef = useRef(null);
-  const chatChunksRef   = useRef([]);
+  /* ── Chat mic: click para iniciar, click para detener ── */
+  const toggleChatMic = async () => {
+    // Si ya está grabando → detener
+    if (chatMicMode) {
+      chatRecorderRef.current?.stop();
+      chatRecorderRef.current = null;
+      setChatMicMode(false);
+      return;
+    }
 
-  const startChatMic = async () => {
+    // Iniciar grabación
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const rec = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+
+      // Cross-browser mimeType
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm')
+        ? 'audio/webm'
+        : MediaRecorder.isTypeSupported('audio/mp4')
+          ? 'audio/mp4'
+          : '';
+
+      const rec = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
+
       chatChunksRef.current = [];
-      rec.ondataavailable = e => chatChunksRef.current.push(e.data);
+      rec.ondataavailable = e => { if (e.data.size > 0) chatChunksRef.current.push(e.data); };
+
       rec.onstop = async () => {
-        stream.getTracks().forEach(t => t.stop());
-        const blob = new Blob(chatChunksRef.current, { type: 'audio/webm' });
-        addMsg('user', '', true);
+        stream.getTracks().forEach(tr => tr.stop());
+        if (chatChunksRef.current.length === 0) return;
+
+        const blob = new Blob(chatChunksRef.current, { type: mimeType || 'audio/webm' });
+
+        // Burbuja del usuario
+        const userMsgId = Date.now() + Math.random();
+        setMessages(prev => [...prev, { id: userMsgId, role: 'user', text: '', isAudio: true }]);
         setChatLoading(true);
+
         try {
-          const { transcript: t, audioBlob } = await voiceApi.process(blob);
-          if (t) {
-            setMessages(prev => {
-              const copy = [...prev];
-              const last = copy.findLastIndex(m => m.role === 'user' && m.isAudio);
-              if (last !== -1) copy[last] = { ...copy[last], text: t };
-              return copy;
-            });
+          const { transcript: userText, audioBlob: aiAudio } = await voiceApi.process(blob);
+
+          // Mostrar lo que dijo el usuario
+          if (userText) {
+            setMessages(prev =>
+              prev.map(m => m.id === userMsgId ? { ...m, text: userText } : m)
+            );
           }
-          addMsg('ai', t || '🔊 Respuesta de voz', false);
-          reloadTasks();
-          if (audioBlob && audioBlob.size > 0) playAudio(audioBlob, null);
+
+          // Detectar si preguntó por tareas
+          const intent = detectTaskListIntent(userText || '');
+
+          if (intent.match) {
+            // Fetch tareas frescas
+            const freshData = await tasksApi.list().catch(() => null);
+            const freshTasks = freshData
+              ? (Array.isArray(freshData) ? freshData : freshData.tasks ?? [])
+              : tasks;
+            setTasks(freshTasks);
+
+            const filtered = getTasksForDays(freshTasks, intent.daysAhead, intent.startDay);
+
+            if (filtered.length === 0) {
+              const emptyMsg = `No encontré tareas pendientes para ${intent.label} 🎉`;
+              addMsg('ai', emptyMsg, false);
+              speakText(emptyMsg);
+            } else {
+              // Mostrar lista escrita
+              const grouped = groupTasksByDate(filtered);
+              setMessages(prev => [...prev, {
+                id: Date.now() + Math.random(),
+                role: 'ai',
+                taskGroups: grouped,
+                totalCount: filtered.length,
+                text: null,
+              }]);
+              // Hablar resumen con el conteo correcto (no el del backend)
+              const summary = `Tienes ${filtered.length} ${filtered.length === 1 ? 'tarea' : 'tareas'} para ${intent.label}.`;
+              speakText(summary);
+            }
+
+          } else {
+            // Respuesta normal: mostrar texto del AI y hablar
+            addMsg('ai', '🔊 Respondió por voz', false);
+            reloadTasks();
+            if (aiAudio && aiAudio.size > 0) playAudio(aiAudio, null);
+          }
+
         } catch {
           addMsg('ai', 'Error al procesar el audio.', false);
         } finally {
           setChatLoading(false);
         }
       };
-      rec.start();
+
+      rec.start(100);
       chatRecorderRef.current = rec;
       setChatMicMode(true);
-    } catch {}
-  };
-
-  const stopChatMic = () => {
-    chatRecorderRef.current?.stop();
-    chatRecorderRef.current = null;
-    setChatMicMode(false);
+    } catch {
+      addMsg('ai', 'No se pudo acceder al micrófono.', false);
+    }
   };
 
   const handleMicDown = () => { setAiStatus('recording'); setAiMessage('Escuchando...'); start(); };
@@ -497,24 +564,11 @@ export default function Observatorio() {
             <Waveform active={isRecording} />
           </div>
 
-          {center.x > 0 && positioned.map(({ task, x, y }) => {
-            // 1. Define dateStr inside the map scope
-            const dateStr = formatTaskDate(task.due_date);
-
-            return (
-              <div 
-                key={task.id} 
-                className="obs-planet-container" 
-                style={{ position: 'absolute', left: x, top: y }}
-              >
-                <PlanetCard 
-                  task={task} 
-                  selected={selected} 
-                  onSelect={setSelected} 
-                />
-              </div>
-            );
-          })}
+          {center.x > 0 && positioned.map(({ task, x, y }) => (
+            <div key={task.id} className="obs-planet-wrap" style={{ left: x, top: y }}>
+              <PlanetCard task={task} selected={selected} onSelect={setSelected} />
+            </div>
+          ))}
 
           {pending.length === 0 && (
             <div className="obs-empty">
@@ -580,13 +634,11 @@ export default function Observatorio() {
             disabled={chatLoading}
           />
           <div className="chat-input-btns">
+            {/* Click para iniciar/detener — no push-to-hold */}
             <button
               className={`chat-mic-btn ${chatMicMode ? 'chat-mic-btn--active' : ''}`}
-              onMouseDown={startChatMic}
-              onMouseUp={stopChatMic}
-              onTouchStart={startChatMic}
-              onTouchEnd={stopChatMic}
-              title="Mantén para hablar"
+              onClick={toggleChatMic}
+              title={chatMicMode ? 'Detener grabación' : 'Grabar mensaje de voz'}
               disabled={chatLoading}
             >
               {chatMicMode ? '⏹' : '🎙'}
