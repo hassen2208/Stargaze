@@ -8,7 +8,7 @@ import './Sidebar.css';
 const NAV_ITEMS = [
   { to: '/app/observatorio', icon: '🔭', label: 'Observatorio' },
   { to: '/app/universo',     icon: '🌌', label: 'Universo'     },
-  { to: '#', icon: '📊', label: 'Estadísticas',  soon: true },
+  { to: '/app/metricas', icon: '📊', label: 'Metricas'},
   { to: '#', icon: '⚙️', label: 'Configuración', soon: true },
 ];
 

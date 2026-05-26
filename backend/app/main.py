@@ -48,3 +48,18 @@ Instrumentator().instrument(app).expose(app)
 @app.get("/")
 def root():
     return {"message": "Stargaze API Running"}
+
+from app.api.v1.endpoints.metrics import router as metrics_router
+app.include_router(metrics_router, prefix="/api/v1")
+
+
+from app.core.metrics import REQUEST_COUNT
+
+@app.middleware("http")
+async def count_requests(request, call_next):
+
+    REQUEST_COUNT.inc()
+
+    response = await call_next(request)
+
+    return response

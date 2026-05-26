@@ -44,3 +44,7 @@ export const voiceApi = {
     return { transcript, audioBlob: blob };
   },
 };
+export const metricsApi = {
+  dashboard: () =>
+    request('/api/v1/metrics/dashboard'),
+};
