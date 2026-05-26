@@ -4,6 +4,9 @@
   height: 100vh;
   overflow: hidden;
   position: relative;
+  /* Fondo oscuro base — cubre las esquinas blancas del body en light mode.
+     Solo aplica al app autenticado, nunca a Login/Registro. */
+  background: #06060f;
 }
 
 .app-main {

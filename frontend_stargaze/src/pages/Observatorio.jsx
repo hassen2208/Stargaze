@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder';
-import { tasksApi, voiceApi, setAuthToken } from '../services/api';
+import { tasksApi, voiceApi, chatApi, ttsApi, setAuthToken } from '../services/api';
 import './Observatorio.css';
 
 /* ── Priority config ────────────────────────────── */
@@ -30,6 +30,57 @@ const DECO_PLANETS = [
   { id: 5, x: 80, y: 88, size: 18, color: '#4c1d95' },
 ];
 
+/* ── Detect task-list intent from user message ── */
+function detectTaskListIntent(text) {
+  const t = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if (/\bhoy\b/.test(t))    return { match: true, daysAhead: 0, label: 'hoy' };
+  if (/\bmanana\b/.test(t)) return { match: true, daysAhead: 1, label: 'mañana' };
+  const m = t.match(/(?:proximos?|siguientes?)\s+(\d+)\s+dias?/);
+  if (m) return { match: true, daysAhead: parseInt(m[1]), label: `los próximos ${m[1]} días` };
+  if (/esta\s+semana/.test(t)) return { match: true, daysAhead: 7, label: 'esta semana' };
+  if (
+    /(citas?|tareas?|pendientes?|actividades?|agenda|compromisos?)/.test(t) &&
+    /(hoy|manana|semana|dias?|prox)/.test(t)
+  ) return { match: true, daysAhead: 3, label: 'los próximos días' };
+  return { match: false, daysAhead: 0, label: '' };
+}
+
+/* ── Filter tasks into a time window ────────────── */
+function getTasksForDays(tasks, daysAhead) {
+  const now          = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endDate      = new Date(startOfToday);
+  endDate.setDate(endDate.getDate() + daysAhead + 1);
+
+  return tasks
+    .filter(t =>
+      t.status !== 'completed' &&
+      t.due_date && t.due_date !== 'None' && t.due_date !== 'null'
+    )
+    .map(t => ({ ...t, _date: new Date(t.due_date) }))
+    .filter(t => !isNaN(t._date) && t._date >= startOfToday && t._date < endDate)
+    .sort((a, b) => a._date - b._date);
+}
+
+/* ── Group filtered tasks by human date label ──── */
+function groupTasksByDate(filteredTasks) {
+  const now      = new Date();
+  const today    = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+
+  const groups = {};
+  filteredTasks.forEach(t => {
+    const dayStart = new Date(t._date.getFullYear(), t._date.getMonth(), t._date.getDate());
+    let label;
+    if (dayStart.getTime() === today.getTime())         label = 'Hoy';
+    else if (dayStart.getTime() === tomorrow.getTime()) label = 'Mañana';
+    else label = t._date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' });
+    if (!groups[label]) groups[label] = [];
+    groups[label].push(t);
+  });
+  return groups;
+}
+
 /* ── Orbit index from due date ──────────────────── */
 function getOrbitIndex(task) {
   if (!task.due_date || task.due_date === 'None' || task.due_date === 'null') return 2;
@@ -47,12 +98,13 @@ function formatTaskDate(raw) {
   try {
     const d = new Date(raw);
     if (isNaN(d)) return null;
-    const now = new Date();
-    const tom = new Date(now); tom.setDate(tom.getDate() + 1);
-    const time = d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    if (d.toDateString() === now.toDateString()) return `hoy ${time}`;
-    if (d.toDateString() === tom.toDateString()) return `mañana ${time}`;
-    return `${d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} ${time}`;
+    const h = d.getHours() % 12 || 12;
+    const min = d.getMinutes().toString().padStart(2, '0');
+    const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const year = d.getFullYear().toString().slice(-2);
+    return `${h}:${min} ${ampm} · ${day}/${month}/${year}`;
   } catch { return null; }
 }
 
@@ -67,7 +119,7 @@ function Waveform({ active }) {
   );
 }
 
-/* ── Floating task planet card (no popup — modal handles actions) ── */
+/* ── Planet card ────────────────────────────────── */
 function PlanetCard({ task, selected, onSelect }) {
   const color   = PRIORITY_COLOR[task.priority] ?? '#94a3b8';
   const icon    = PRIORITY_ICON[task.priority]  ?? '✦';
@@ -83,13 +135,14 @@ function PlanetCard({ task, selected, onSelect }) {
       <span className="obs-planet-icon">{icon}</span>
       <div className="obs-planet-body">
         <p className="obs-planet-title">{task.title}</p>
-        {dateStr && <p className="obs-planet-date">{dateStr}</p>}
+        {task.description && <p className="obs-planet-desc">{task.description}</p>}
+        {!task.description && dateStr && <p className="obs-planet-date">{dateStr}</p>}
       </div>
     </div>
   );
 }
 
-/* ── Task detail modal (centered, easy to tap) ──── */
+/* ── Task modal ─────────────────────────────────── */
 function TaskModal({ task, onClose, onToggle, onDelete }) {
   if (!task) return null;
   const color   = PRIORITY_COLOR[task.priority] ?? '#94a3b8';
@@ -107,25 +160,73 @@ function TaskModal({ task, onClose, onToggle, onDelete }) {
           </div>
           <button className="obs-modal-close" onClick={onClose}>✕</button>
         </div>
-        {task.description && (
-          <p className="obs-modal-desc">{task.description}</p>
-        )}
+        {task.description && <p className="obs-modal-desc">{task.description}</p>}
         <div className="obs-modal-actions">
-          <button
-            className="obs-modal-btn obs-modal-btn--check"
-            onClick={() => { onToggle(task); onClose(); }}
-          >✓ Completar</button>
-          <button
-            className="obs-modal-btn obs-modal-btn--del"
-            onClick={() => { onDelete(task.id); onClose(); }}
-          >🗑 Eliminar</button>
+          <button className="obs-modal-btn obs-modal-btn--check" onClick={() => { onToggle(task); onClose(); }}>
+            ✓ Completar
+          </button>
+          <button className="obs-modal-btn obs-modal-btn--del" onClick={() => { onDelete(task.id); onClose(); }}>
+            🗑 Eliminar
+          </button>
         </div>
       </div>
     </div>
   );
 }
 
-/* ── Main page ──────────────────────────────────── */
+/* ── Chat message bubble ────────────────────────── */
+function ChatBubble({ msg }) {
+  const isUser = msg.role === 'user';
+
+  if (msg.taskGroups) {
+    const entries = Object.entries(msg.taskGroups);
+    return (
+      <div className="chat-bubble chat-bubble--ai">
+        <span className="chat-bubble-avatar">✦</span>
+        <div className="chat-bubble-content chat-bubble-content--list">
+          <p className="chat-tasklist-intro">
+            {msg.totalCount === 1
+              ? '1 tarea encontrada:'
+              : `${msg.totalCount} tareas encontradas:`}
+          </p>
+          {entries.map(([dateLabel, tasks]) => (
+            <div key={dateLabel} className="chat-tasklist-group">
+              <p className="chat-tasklist-date">{dateLabel}</p>
+              {tasks.map(t => (
+                <div key={t.id} className="chat-tasklist-item">
+                  <span className="chat-tasklist-time">
+                    {t._date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                  <span
+                    className="chat-tasklist-dot"
+                    style={{ background: PRIORITY_COLOR[t.priority] ?? '#94a3b8' }}
+                  />
+                  <span className="chat-tasklist-title">{t.title}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`chat-bubble chat-bubble--${isUser ? 'user' : 'ai'}`}>
+      {!isUser && <span className="chat-bubble-avatar">✦</span>}
+      <div className="chat-bubble-content">
+        {msg.isAudio && isUser && (
+          <span className="chat-audio-pill">🎙 Audio</span>
+        )}
+        {msg.text && <p className="chat-bubble-text">{msg.text}</p>}
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════
+   MAIN PAGE
+   ════════════════════════════════════════════════ */
 export default function Observatorio() {
   const [aiStatus,   setAiStatus]   = useState('idle');
   const [aiMessage,  setAiMessage]  = useState('Mantén presionado para hablar');
@@ -133,10 +234,28 @@ export default function Observatorio() {
   const [tasks,      setTasks]      = useState([]);
   const [selected,   setSelected]   = useState(null);
   const [center,     setCenter]     = useState({ x: 0, y: 0 });
+
+  const [messages,     setMessages]    = useState([
+    { id: 0, role: 'ai', text: '¡Hola! Puedes escribirme o usar el micrófono. Te ayudo a organizar tus tareas 🚀', isAudio: false },
+  ]);
+  const [inputText,    setInputText]   = useState('');
+  const [chatLoading,  setChatLoading] = useState(false);
+  const [chatMicMode,  setChatMicMode] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
+
   const containerRef = useRef(null);
   const audioRef     = useRef(null);
+  const chatEndRef   = useRef(null);
+  const inputRef     = useRef(null);
 
-  /* ── Load token + tasks ── */
+  const addMsg = useCallback((role, text, isAudio = false) => {
+    setMessages(prev => [...prev, { id: Date.now() + Math.random(), role, text, isAudio }]);
+  }, []);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   useEffect(() => {
     const stored = localStorage.getItem('token');
     if (stored) setAuthToken(stored);
@@ -145,14 +264,11 @@ export default function Observatorio() {
       .catch(() => {});
   }, []);
 
-  /* ── Measure orbital container via ResizeObserver ── */
   useEffect(() => {
     if (!containerRef.current) return;
     const obs = new ResizeObserver(entries => {
       const { width, height } = entries[0].contentRect;
-      if (width > 0 && height > 0) {
-        setCenter({ x: width / 2, y: height / 2 });
-      }
+      if (width > 0 && height > 0) setCenter({ x: width / 2, y: height / 2 });
     });
     obs.observe(containerRef.current);
     return () => obs.disconnect();
@@ -163,8 +279,23 @@ export default function Observatorio() {
       .then(data => setTasks(Array.isArray(data) ? data : data.tasks ?? []))
       .catch(() => {});
 
-  /* ── Voice recorder ── */
+  const playAudio = (blob, onEnd) => {
+    const url = URL.createObjectURL(blob);
+    audioRef.current.src = url;
+    audioRef.current.play();
+    audioRef.current.onended = () => { onEnd?.(); URL.revokeObjectURL(url); };
+  };
+
+  const speakText = useCallback(async (text) => {
+    if (!text) return;
+    try {
+      const audioBlob = await ttsApi.speak(text);
+      playAudio(audioBlob, null);
+    } catch {}
+  }, []);
+
   const { isRecording, start, stop } = useVoiceRecorder(async (blob) => {
+    if (chatMicMode) return;
     setAiStatus('processing');
     setAiMessage('Procesando...');
     try {
@@ -173,24 +304,119 @@ export default function Observatorio() {
       setAiStatus('speaking');
       setAiMessage('Respondiendo...');
       reloadTasks();
-      const url = URL.createObjectURL(audioBlob);
-      audioRef.current.src = url;
-      audioRef.current.play();
-      audioRef.current.onended = () => {
+      playAudio(audioBlob, () => {
         setAiStatus('idle');
         setAiMessage('Mantén presionado para hablar');
-        URL.revokeObjectURL(url);
-      };
+      });
     } catch {
       setAiStatus('idle');
       setAiMessage('Error al procesar. Intenta de nuevo.');
     }
   });
 
+  /* ── Chat: enviar texto ── */
+  const handleSendText = async () => {
+    const text = inputText.trim();
+    if (!text || chatLoading) return;
+    setInputText('');
+    addMsg('user', text, false);
+    setChatLoading(true);
+
+    const intent = detectTaskListIntent(text);
+
+    try {
+      const { response } = await chatApi.send(text);
+
+      if (intent.match) {
+        const freshData = await tasksApi.list().catch(() => null);
+        const freshTasks = freshData
+          ? (Array.isArray(freshData) ? freshData : freshData.tasks ?? [])
+          : tasks;
+        setTasks(freshTasks);
+
+        const filtered = getTasksForDays(freshTasks, intent.daysAhead);
+
+        if (filtered.length === 0) {
+          const empty = `No encontré tareas pendientes para ${intent.label} 🎉`;
+          addMsg('ai', empty, false);
+          if (voiceEnabled) speakText(empty);
+        } else {
+          const grouped = groupTasksByDate(filtered);
+          setMessages(prev => [...prev, {
+            id: Date.now() + Math.random(),
+            role: 'ai',
+            taskGroups: grouped,
+            totalCount: filtered.length,
+            text: null,
+          }]);
+          if (voiceEnabled) {
+            speakText(`Tienes ${filtered.length} ${filtered.length === 1 ? 'tarea' : 'tareas'} para ${intent.label}.`);
+          }
+        }
+      } else {
+        addMsg('ai', response, false);
+        reloadTasks();
+        if (voiceEnabled) speakText(response);
+      }
+    } catch {
+      addMsg('ai', 'Ocurrió un error. Intenta de nuevo.', false);
+    } finally {
+      setChatLoading(false);
+    }
+  };
+
+  const handleInputKey = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendText(); }
+  };
+
+  const chatRecorderRef = useRef(null);
+  const chatChunksRef   = useRef([]);
+
+  const startChatMic = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const rec = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+      chatChunksRef.current = [];
+      rec.ondataavailable = e => chatChunksRef.current.push(e.data);
+      rec.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop());
+        const blob = new Blob(chatChunksRef.current, { type: 'audio/webm' });
+        addMsg('user', '', true);
+        setChatLoading(true);
+        try {
+          const { transcript: t, audioBlob } = await voiceApi.process(blob);
+          if (t) {
+            setMessages(prev => {
+              const copy = [...prev];
+              const last = copy.findLastIndex(m => m.role === 'user' && m.isAudio);
+              if (last !== -1) copy[last] = { ...copy[last], text: t };
+              return copy;
+            });
+          }
+          addMsg('ai', t || '🔊 Respuesta de voz', false);
+          reloadTasks();
+          if (audioBlob && audioBlob.size > 0) playAudio(audioBlob, null);
+        } catch {
+          addMsg('ai', 'Error al procesar el audio.', false);
+        } finally {
+          setChatLoading(false);
+        }
+      };
+      rec.start();
+      chatRecorderRef.current = rec;
+      setChatMicMode(true);
+    } catch {}
+  };
+
+  const stopChatMic = () => {
+    chatRecorderRef.current?.stop();
+    chatRecorderRef.current = null;
+    setChatMicMode(false);
+  };
+
   const handleMicDown = () => { setAiStatus('recording'); setAiMessage('Escuchando...'); start(); };
   const handleMicUp   = () => stop();
 
-  /* ── Task actions ── */
   const toggleTask = async (task) => {
     const updated = { ...task, status: task.status === 'completed' ? 'pending' : 'completed' };
     setTasks(prev => prev.map(t => t.id === task.id ? updated : t));
@@ -202,7 +428,6 @@ export default function Observatorio() {
     try { await tasksApi.remove(id); } catch {}
   };
 
-  /* ── Compute orbital positions ── */
   const pending = tasks.filter(t => t.status !== 'completed');
   const groups  = [[], [], []];
   pending.forEach(t => groups[getOrbitIndex(t)].push(t));
@@ -224,8 +449,6 @@ export default function Observatorio() {
 
   return (
     <div className="obs-root" onClick={() => setSelected(null)}>
-
-      {/* ── Background stars + deco planets ── */}
       <div className="obs-starfield" aria-hidden="true">
         {DECO_STARS.map(s => (
           <div key={s.id} className="obs-deco-star" style={{
@@ -244,81 +467,148 @@ export default function Observatorio() {
         ))}
       </div>
 
-      {/* ── Top title ── */}
-      <div className="obs-topbar">
-        <h1 className="obs-topbar-title">¿Qué deseas organizar hoy?</h1>
-      </div>
-
-      {/* ── Orbital canvas ── */}
-      <div className="obs-orbital" ref={containerRef}>
-
-        {/* Orbit rings */}
-        {ORBITS.map((r, i) => (
-          <div key={i} className="obs-orbit-ring" style={{ width: r * 2, height: r * 2 }} />
-        ))}
-
-        {/* Central star mascot */}
-        <div className={`obs-mascot obs-mascot--${mascotState}`}>
-          <div className="obs-mascot-glow" />
-          <div className="obs-mascot-star">★</div>
-          <div className="obs-mascot-face">
-            <span className="obs-mascot-eye" />
-            <span className="obs-mascot-eye" />
-          </div>
-          <div className="obs-mascot-smile" />
-          <div className="obs-mascot-pulse obs-mascot-pulse--1" />
-          <div className="obs-mascot-pulse obs-mascot-pulse--2" />
+      <div className="obs-left">
+        <div className="obs-topbar">
+          <h1 className="obs-topbar-title">¿Qué deseas organizar hoy?</h1>
         </div>
 
-        {/* Status text + transcript */}
-        <div className="obs-status-area">
-          {transcript && aiStatus !== 'idle' && (
-            <p className="obs-transcript-pill">"{transcript}"</p>
+        <div className="obs-orbital" ref={containerRef}>
+          {ORBITS.map((r, i) => (
+            <div key={i} className="obs-orbit-ring" style={{ width: r * 2, height: r * 2 }} />
+          ))}
+
+          <div className={`obs-mascot obs-mascot--${mascotState}`}>
+            <div className="obs-mascot-glow" />
+            <div className="obs-mascot-star">★</div>
+            <div className="obs-mascot-face">
+              <span className="obs-mascot-eye" />
+              <span className="obs-mascot-eye" />
+            </div>
+            <div className="obs-mascot-smile" />
+            <div className="obs-mascot-pulse obs-mascot-pulse--1" />
+            <div className="obs-mascot-pulse obs-mascot-pulse--2" />
+          </div>
+
+          <div className="obs-status-area">
+            {transcript && aiStatus !== 'idle' && (
+              <p className="obs-transcript-pill">"{transcript}"</p>
+            )}
+            <p className="obs-status-text">{aiMessage}</p>
+            <Waveform active={isRecording} />
+          </div>
+
+          {center.x > 0 && positioned.map(({ task, x, y }) => {
+            // 1. Define dateStr inside the map scope
+            const dateStr = formatTaskDate(task.due_date);
+
+            return (
+              <div 
+                key={task.id} 
+                className="obs-planet-container" 
+                style={{ position: 'absolute', left: x, top: y }}
+              >
+                <PlanetCard 
+                  task={task} 
+                  selected={selected} 
+                  onSelect={setSelected} 
+                />
+              </div>
+            );
+          })}
+
+          {pending.length === 0 && (
+            <div className="obs-empty">
+              <p>Usa el micrófono o el chat para agregar tu primera misión</p>
+            </div>
           )}
-          <p className="obs-status-text">{aiMessage}</p>
-          <Waveform active={isRecording} />
         </div>
 
-        {/* Task planets */}
-        {center.x > 0 && positioned.map(({ task, x, y }) => (
-          <div key={task.id} className="obs-planet-wrap" style={{ left: x, top: y }}>
-            <PlanetCard
-              task={task}
-              selected={selected}
-              onSelect={setSelected}
-            />
-          </div>
-        ))}
-
-        {/* Empty state */}
-        {pending.length === 0 && (
-          <div className="obs-empty">
-            <p>Usa el micrófono para agregar tu primera misión</p>
-          </div>
-        )}
+        <div className="obs-mic-area">
+          <button
+            className={`obs-mic-btn ${isRecording ? 'obs-mic-btn--recording' : ''}`}
+            onMouseDown={handleMicDown}
+            onMouseUp={handleMicUp}
+            onTouchStart={handleMicDown}
+            onTouchEnd={handleMicUp}
+          >
+            <span className="obs-mic-icon">{isRecording ? '⏹' : '🎙'}</span>
+          </button>
+        </div>
       </div>
 
-      {/* ── Mic button ── */}
-      <div className="obs-mic-area">
-        <button
-          className={`obs-mic-btn ${isRecording ? 'obs-mic-btn--recording' : ''}`}
-          onMouseDown={handleMicDown}
-          onMouseUp={handleMicUp}
-          onTouchStart={handleMicDown}
-          onTouchEnd={handleMicUp}
-        >
-          <span className="obs-mic-icon">{isRecording ? '⏹' : '🎙'}</span>
-        </button>
+      <div className="obs-chat" onClick={e => e.stopPropagation()}>
+        <div className="chat-header">
+          <span className="chat-header-icon">✦</span>
+          <div>
+            <p className="chat-header-title">Conversación</p>
+            <p className="chat-header-sub">Escribe o usa el micrófono</p>
+          </div>
+          {chatLoading && <span className="chat-typing-dot" />}
+          <button
+            className={`chat-voice-toggle ${voiceEnabled ? 'chat-voice-toggle--on' : ''}`}
+            onClick={() => setVoiceEnabled(v => !v)}
+            title={voiceEnabled ? 'Silenciar respuestas' : 'Activar voz'}
+          >
+            {voiceEnabled ? '🔊' : '🔇'}
+          </button>
+        </div>
+
+        <div className="chat-messages">
+          {messages.map(msg => (
+            <ChatBubble key={msg.id} msg={msg} />
+          ))}
+          {chatLoading && (
+            <div className="chat-bubble chat-bubble--ai">
+              <span className="chat-bubble-avatar">✦</span>
+              <div className="chat-bubble-content chat-typing">
+                <span /><span /><span />
+              </div>
+            </div>
+          )}
+          <div ref={chatEndRef} />
+        </div>
+
+        <div className="chat-input-area">
+          <textarea
+            ref={inputRef}
+            className="chat-input"
+            placeholder="Escribe un mensaje..."
+            value={inputText}
+            onChange={e => setInputText(e.target.value)}
+            onKeyDown={handleInputKey}
+            rows={1}
+            disabled={chatLoading}
+          />
+          <div className="chat-input-btns">
+            <button
+              className={`chat-mic-btn ${chatMicMode ? 'chat-mic-btn--active' : ''}`}
+              onMouseDown={startChatMic}
+              onMouseUp={stopChatMic}
+              onTouchStart={startChatMic}
+              onTouchEnd={stopChatMic}
+              title="Mantén para hablar"
+              disabled={chatLoading}
+            >
+              {chatMicMode ? '⏹' : '🎙'}
+            </button>
+            <button
+              className="chat-send-btn"
+              onClick={handleSendText}
+              disabled={!inputText.trim() || chatLoading}
+              title="Enviar"
+            >
+              ➤
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* ── Task detail modal ── */}
       <TaskModal
         task={tasks.find(t => t.id === selected) ?? null}
         onClose={() => setSelected(null)}
         onToggle={toggleTask}
         onDelete={deleteTask}
       />
-
       <audio ref={audioRef} hidden />
     </div>
   );

@@ -1,65 +1,238 @@
-.metrics-title{
-    color: white;
-    text-align: center;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    font-size: 2rem;
+/* ══════════════════════════════════════════════
+   MÉTRICAS PAGE
+   ══════════════════════════════════════════════ */
+
+.metricas-root {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  background-image:
+    /* ── Estrellas ── */
+    radial-gradient(1px   1px   at  8% 12%, rgba(255,255,255,.65) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 22% 38%, rgba(255,255,255,.45) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 40% 18%, rgba(255,255,255,.55) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 57% 67%, rgba(255,255,255,.40) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 72%  8%, rgba(255,255,255,.60) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 83% 52%, rgba(255,255,255,.50) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 33% 82%, rgba(255,255,255,.42) 0%, transparent 100%),
+    radial-gradient(2px   2px   at 68% 88%, rgba(139,92,246,.35)  0%, transparent 100%),
+    radial-gradient(1px   1px   at 14% 62%, rgba(34,211,238,.25)  0%, transparent 100%),
+    radial-gradient(1px   1px   at 91% 30%, rgba(255,255,255,.38) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 50% 50%, rgba(139,92,246,.20)  0%, transparent 100%),
+    radial-gradient(1px   1px   at  5% 45%, rgba(255,255,255,.30) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 78% 72%, rgba(255,255,255,.45) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 62% 25%, rgba(255,255,255,.35) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 29% 55%, rgba(34,211,238,.18)  0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 88% 78%, rgba(255,255,255,.42) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 44% 92%, rgba(139,92,246,.28)  0%, transparent 100%),
+    radial-gradient(1px   1px   at 96%  5%, rgba(255,255,255,.50) 0%, transparent 100%),
+    /* ── Brillo nebulosa ── */
+    radial-gradient(ellipse at 60% 10%, rgba(109,40,217,0.28) 0%, transparent 50%),
+    radial-gradient(ellipse at 15% 85%, rgba(34,211,238,0.12) 0%, transparent 40%),
+    /* ── Fondo base ── */
+    radial-gradient(ellipse at 50% 50%, #0e0028 0%, #05000e 100%);
+  padding: 36px 40px;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
-.stats{
-    display: grid;
-
-    grid-template-columns:
-        repeat(auto-fit, minmax(240px, 1fr));
-
-    gap: 35px;
-
-    padding: 50px;
-
-    max-width: 1600px;
-
-    margin: 0 auto;
+/* ── Estrellas ─────────────────────────────────── */
+.metricas-stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(1px   1px   at  8% 12%, rgba(255,255,255,.65) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 22% 38%, rgba(255,255,255,.45) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 40% 18%, rgba(255,255,255,.55) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 57% 67%, rgba(255,255,255,.40) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 72%  8%, rgba(255,255,255,.60) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 83% 52%, rgba(255,255,255,.50) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 33% 82%, rgba(255,255,255,.42) 0%, transparent 100%),
+    radial-gradient(2px   2px   at 68% 88%, rgba(139,92,246,.35)  0%, transparent 100%),
+    radial-gradient(1px   1px   at 14% 62%, rgba(34,211,238,.25)  0%, transparent 100%),
+    radial-gradient(1px   1px   at 91% 30%, rgba(255,255,255,.38) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 50% 50%, rgba(139,92,246,.2)  0%, transparent 100%),
+    radial-gradient(1px   1px   at  5% 45%, rgba(255,255,255,.30) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 78% 72%, rgba(255,255,255,.45) 0%, transparent 100%);
 }
 
-.stat-card{
+.metricas-root > * { position: relative; z-index: 1; }
 
-    background: rgba(255,255,255,0.08);
-
-    backdrop-filter: blur(12px);
-
-    border: 1px solid rgba(255,255,255,0.12);
-
-    border-radius: 24px;
-
-    padding: 35px;
-
-    color: white;
-
-    text-align: center;
-
-    transition: all 0.3s ease;
-
-    box-shadow:
-        0 8px 32px rgba(0,0,0,0.25);
+/* ── Header ────────────────────────────────────── */
+.metrics-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+.metrics-header-left {}
+.metrics-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  margin: 0 0 4px;
+  background: linear-gradient(135deg, var(--purple-300), var(--cyan-300));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.metrics-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+.metrics-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--purple-300);
+  background: rgba(139,92,246,0.12);
+  border: 1px solid rgba(139,92,246,0.25);
+  border-radius: 20px;
+  padding: 6px 14px;
 }
 
-.stat-card:hover{
-
-    transform: translateY(-8px);
-
-    border:
-        1px solid rgba(255,255,255,0.25);
-}
-.stat-card:hover{
-    transform: translateY(-5px);
+/* ── KPI row ────────────────────────────────────── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
-.stat-card p{
-    font-size: 1rem;
-    margin-bottom: 10px;
-    opacity: 0.8;
+.stat-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(139,92,246,0.18);
+  border-radius: 14px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 18px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.2s, background 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--card-accent, var(--purple-500));
+  opacity: 0.75;
+}
+.stat-card:hover {
+  background: rgba(139,92,246,0.08);
+  border-color: rgba(139,92,246,0.38);
+  transform: translateY(-3px);
 }
 
-.stat-card h2{
-    font-size: 2rem;
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.stat-card-icon { font-size: 14px; line-height: 1; }
+.stat-card-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+.stat-card-value {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--card-color, var(--purple-300));
+  line-height: 1;
+  margin: 0;
+}
+
+.stat-card--requests  { --card-accent: #8b5cf6; --card-color: #c4b5fd; }
+.stat-card--llm       { --card-accent: #a78bfa; --card-color: #c4b5fd; }
+.stat-card--tokens    { --card-accent: #22d3ee; --card-color: #67e8f9; }
+.stat-card--cost      { --card-accent: #34d399; --card-color: #6ee7b7; }
+.stat-card--errors    { --card-accent: #f87171; --card-color: #fca5a5; }
+
+/* ── Charts row ─────────────────────────────────── */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 16px;
+}
+
+.chart-panel {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(139,92,246,0.18);
+  border-radius: 14px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 24px;
+}
+
+.chart-panel-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 20px;
+  letter-spacing: 0.03em;
+}
+
+/* ── Bar chart ──────────────────────────────────── */
+.bar-chart-wrap {
+  width: 100%;
+  overflow: hidden;
+}
+.bar-chart-svg { width: 100%; display: block; }
+
+/* ── Donut chart ────────────────────────────────── */
+.donut-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.donut-svg { width: 160px; height: 160px; display: block; }
+
+.donut-legend {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.legend-pct {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+/* ── Empty state ────────────────────────────────── */
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 140px;
+  color: var(--text-muted);
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+.metricas-loading {
+  color: var(--text-muted);
+  font-size: 14px;
 }

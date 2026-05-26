@@ -1,3 +1,6 @@
+/* ════════════════════════════════════════════════
+   CSS DEL COMPAÑERO — no modificar
+   ════════════════════════════════════════════════ */
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -94,8 +97,10 @@ button:focus-visible {
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Override necesario*/
-/*  */
+/* Pisa el display:flex del compañero.
+   Sin background en body — cada página del app tiene su propio fondo
+   (.obs-root, .uni-root) y el sidebar tiene background: var(--bg-surface).
+   Login/Registro necesitan que el body sea transparente para ver sus imágenes. */
 html, body {
   height: 100%;
   overflow: hidden;
@@ -106,12 +111,28 @@ html, body {
   min-width: unset;
 }
 
+/* Neutralizar el light mode del compañero — Stargaze siempre es dark */
+@media (prefers-color-scheme: light) {
+  html, body {
+    background-color: transparent !important;
+    color: #f0f0ff !important;
+  }
+  .sidebar {
+    background: #0d0d1a !important;
+  }
+  .obs-root {
+    background: radial-gradient(ellipse at 50% 45%, #1e0545 0%, #0e0028 40%, #05000e 100%) !important;
+  }
+  .uni-root {
+    background: radial-gradient(ellipse at 50% 60%, #1a0533 0%, #0c0020 45%, #030008 100%) !important;
+  }
+}
+
 #root {
   height: 100%;
   overflow: hidden;
 }
 
-/* Override necesario:*/
 h1 { font-size: 2em; line-height: 1.2; }
 
 /* ── Estrellas ─────────────────────────────────── */

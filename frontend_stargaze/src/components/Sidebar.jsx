@@ -8,12 +8,13 @@ import './Sidebar.css';
 const NAV_ITEMS = [
   { to: '/app/observatorio', icon: '🔭', label: 'Observatorio' },
   { to: '/app/universo',     icon: '🌌', label: 'Universo'     },
-  { to: '/app/metricas', icon: '📊', label: 'Metricas'},
+  { to: '/app/metricas',     icon: '📊', label: 'Metricas'     },
   { to: '#', icon: '⚙️', label: 'Configuración', soon: true },
 ];
 
 export default function Sidebar() {
   const [user, setUser] = useState(null);
+  const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,11 +34,19 @@ export default function Sidebar() {
   const avatar = displayName.charAt(0).toUpperCase();
 
   return (
-    <aside className="sidebar card">
-      {/* Logo */}
+    <aside className={`sidebar card${collapsed ? ' sidebar--collapsed' : ''}`}>
+
+      {/* Logo + botón toggle en la misma fila */}
       <div className="sidebar-logo">
         <span className="sidebar-logo-icon">✦</span>
         <span className="sidebar-logo-text text-gradient">STARGAZE</span>
+        <button
+          className="sidebar-toggle"
+          onClick={() => setCollapsed(c => !c)}
+          title={collapsed ? 'Expandir sidebar' : 'Colapsar sidebar'}
+        >
+          {collapsed ? '›' : '‹'}
+        </button>
       </div>
 
       {/* Nav */}

@@ -5,32 +5,99 @@
   display: flex;
   flex-direction: column;
   padding: 20px 12px;
+  background: #0d0d1a !important;
   border-right: 1px solid var(--border);
   border-radius: 0;
   position: relative;
   z-index: 10;
+  transition: width 0.28s ease, min-width 0.28s ease;
+  overflow: hidden;
 }
 
-/* Logo */
+/* ── Collapsed state ───────────────────────────── */
+.sidebar--collapsed {
+  width: 60px;
+  min-width: 60px;
+}
+
+/* Ocultar textos al colapsar */
+.sidebar--collapsed .sidebar-logo-text,
+.sidebar--collapsed .sidebar-item-label,
+.sidebar--collapsed .sidebar-soon-badge,
+.sidebar--collapsed .sidebar-user-info,
+.sidebar--collapsed .sidebar-logout-btn {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 0.15s ease, max-width 0.25s ease;
+}
+
+.sidebar--collapsed .sidebar-logo {
+  justify-content: center;
+}
+.sidebar--collapsed .sidebar-toggle {
+  margin-left: 0;
+}
+.sidebar--collapsed .sidebar-item {
+  justify-content: center;
+  padding: 10px 0;
+}
+.sidebar--collapsed .sidebar-user {
+  justify-content: center;
+}
+
+/* ── Logo row (con toggle integrado) ──────────── */
 .sidebar-logo {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 8px 24px;
+  padding: 0 4px 20px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 16px;
 }
 .sidebar-logo-icon {
   font-size: 20px;
   color: var(--purple-400);
+  flex-shrink: 0;
 }
 .sidebar-logo-text {
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.1em;
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.15s ease, max-width 0.25s ease;
 }
 
-/* Nav */
+/* ── Botón toggle (dentro del logo row) ───────── */
+.sidebar-toggle {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: rgba(139,92,246,0.1);
+  border: 1px solid rgba(139,92,246,0.25);
+  color: var(--purple-300);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  padding: 0;
+  line-height: 1;
+}
+.sidebar-toggle:hover {
+  background: rgba(139,92,246,0.25);
+  border-color: rgba(139,92,246,0.5);
+  color: #ede9fe;
+}
+
+/* ── Nav ────────────────────────────────────────── */
 .sidebar-nav {
   flex: 1;
   display: flex;
@@ -42,7 +109,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
+  padding: 10px 10px;
   border-radius: 8px;
   text-decoration: none;
   color: var(--text-muted);
@@ -51,6 +118,7 @@
   transition: var(--transition);
   border-left: 2px solid transparent;
   cursor: pointer;
+  white-space: nowrap;
 }
 .sidebar-item:hover:not(.sidebar-item--soon) {
   color: var(--text-primary);
@@ -67,8 +135,12 @@
   cursor: default;
 }
 
-.sidebar-item-icon { font-size: 16px; }
-.sidebar-item-label { flex: 1; }
+.sidebar-item-icon { font-size: 16px; flex-shrink: 0; }
+.sidebar-item-label {
+  flex: 1;
+  overflow: hidden;
+  transition: opacity 0.15s ease, max-width 0.25s ease;
+}
 
 .sidebar-soon-badge {
   font-size: 9px;
@@ -79,14 +151,17 @@
   color: var(--purple-300);
   padding: 2px 6px;
   border-radius: 99px;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.15s ease, max-width 0.25s ease;
 }
 
-/* User */
+/* ── User ────────────────────────────────────────── */
 .sidebar-user {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 8px 0;
+  padding: 12px 4px 0;
   border-top: 1px solid var(--border);
   margin-top: 16px;
 }
@@ -107,15 +182,18 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 .sidebar-user-role {
   font-size: 11px;
   color: var(--text-muted);
+  white-space: nowrap;
 }
-
 .sidebar-user-info {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
+  transition: opacity 0.15s ease, max-width 0.25s ease;
 }
 
 .sidebar-logout-btn {
@@ -128,9 +206,10 @@
   border-radius: 6px;
   line-height: 1;
   flex-shrink: 0;
-  transition: color 0.15s, background 0.15s;
+  transition: color 0.15s, background 0.15s, opacity 0.15s, max-width 0.25s;
+  overflow: hidden;
 }
 .sidebar-logout-btn:hover {
   color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239,68,68,0.1);
 }
