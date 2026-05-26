@@ -1,0 +1,611 @@
+/* ══════════════════════════════════════════════════
+   Observatorio — full-screen orbital UI
+   ══════════════════════════════════════════════════ */
+
+/* ── Root ─────────────────────────────────────── */
+.obs-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 45%,
+    #1e0545 0%, #0e0028 40%, #05000e 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Starfield (background layer) ────────────── */
+.obs-starfield {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.obs-deco-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  animation: obs-twinkle ease-in-out infinite alternate;
+}
+
+@keyframes obs-twinkle {
+  from { opacity: 0.06; transform: scale(0.5); }
+  to   { opacity: 0.65; transform: scale(1.5); }
+}
+
+.obs-deco-planet {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.75;
+  filter: blur(0.5px);
+  box-shadow: 0 0 12px currentColor;
+}
+
+/* ── Top bar ──────────────────────────────────── */
+.obs-topbar {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  padding: 26px 24px 0;
+  pointer-events: none;
+}
+
+.obs-topbar-title {
+  font-size: 21px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+  letter-spacing: 0.01em;
+}
+
+/* ── Orbital canvas ───────────────────────────── */
+.obs-orbital {
+  position: relative;
+  flex: 1;
+  min-height: 420px;
+  z-index: 1;
+}
+
+/* Orbit rings */
+.obs-orbit-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(139, 92, 246, 0.14);
+  pointer-events: none;
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.04) inset;
+}
+
+/* ── Central star mascot ──────────────────────── */
+.obs-mascot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 130px;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* Ambient glow */
+.obs-mascot-glow {
+  position: absolute;
+  inset: -60px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(167, 139, 250, 0.38) 0%,
+    rgba(139, 92, 246, 0.14) 40%,
+    transparent 70%
+  );
+  animation: obs-glow-pulse 3s ease-in-out infinite alternate;
+}
+
+.obs-mascot--recording .obs-mascot-glow {
+  background: radial-gradient(
+    circle,
+    rgba(239, 68, 68, 0.42) 0%,
+    rgba(220, 38, 38, 0.14) 40%,
+    transparent 70%
+  );
+}
+
+.obs-mascot--speaking .obs-mascot-glow {
+  background: radial-gradient(
+    circle,
+    rgba(34, 211, 238, 0.36) 0%,
+    rgba(6, 182, 212, 0.12) 40%,
+    transparent 70%
+  );
+}
+
+@keyframes obs-glow-pulse {
+  from { transform: scale(0.85); opacity: 0.75; }
+  to   { transform: scale(1.18); opacity: 1; }
+}
+
+/* Star character */
+.obs-mascot-star {
+  font-size: 118px;
+  line-height: 1;
+  position: relative;
+  z-index: 2;
+  color: #e9d5ff;
+  text-shadow:
+    0 0 18px rgba(216, 180, 254, 1),
+    0 0 40px rgba(192, 132, 252, 0.9),
+    0 0 80px rgba(167, 139, 250, 0.7),
+    0 0 140px rgba(139, 92, 246, 0.5);
+  animation: obs-star-float 4s ease-in-out infinite;
+  user-select: none;
+}
+
+.obs-mascot--recording .obs-mascot-star {
+  color: #fca5a5;
+  text-shadow:
+    0 0 18px rgba(252, 165, 165, 1),
+    0 0 40px rgba(248, 113, 113, 0.9),
+    0 0 80px rgba(239, 68, 68, 0.6);
+}
+
+@keyframes obs-star-float {
+  0%, 100% { transform: translateY(0)    rotate(-3deg); }
+  50%       { transform: translateY(-10px) rotate(3deg); }
+}
+
+/* Face overlay */
+.obs-mascot-face {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -62%);
+  display: flex;
+  gap: 20px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.obs-mascot-eye {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #faf5ff;
+  box-shadow: 0 0 8px rgba(233, 213, 255, 0.95);
+}
+
+.obs-mascot--recording .obs-mascot-eye {
+  background: #fee2e2;
+  box-shadow: 0 0 8px rgba(252, 165, 165, 0.95);
+}
+
+.obs-mascot-smile {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -8%);
+  width: 30px;
+  height: 15px;
+  border-bottom: 3px solid #e9d5ff;
+  border-radius: 0 0 30px 30px;
+  z-index: 3;
+  pointer-events: none;
+  box-shadow: 0 5px 8px rgba(233, 213, 255, 0.4);
+}
+
+/* Pulse rings */
+.obs-mascot-pulse {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  animation: obs-pulse-out 3s ease-out infinite;
+  pointer-events: none;
+}
+
+.obs-mascot-pulse--1 { inset: -18px; animation-delay: 0s; }
+.obs-mascot-pulse--2 { inset: -38px; animation-delay: 1.5s; }
+
+@keyframes obs-pulse-out {
+  0%   { transform: scale(0.75); opacity: 0.65; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+/* ── Status / transcript area ─────────────────── */
+.obs-status-area {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 82px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+  pointer-events: none;
+  width: 300px;
+}
+
+.obs-status-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.obs-transcript-pill {
+  font-size: 13px;
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.18);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 99px;
+  padding: 4px 16px;
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Waveform */
+.obs-waveform {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 22px;
+}
+
+.obs-wave-bar {
+  width: 3px;
+  height: 8px;
+  border-radius: 2px;
+  background: rgba(167, 139, 250, 0.35);
+  transform: scaleY(0.4);
+}
+
+.obs-waveform--active .obs-wave-bar {
+  background: #c4b5fd;
+  animation: waveform 0.6s ease-in-out infinite alternate;
+}
+
+/* ── Planet task card wrapper ─────────────────── */
+.obs-planet-wrap {
+  position: absolute;
+  z-index: 5;
+}
+
+/* ── Planet task card ─────────────────────────── */
+.obs-planet {
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(10, 4, 26, 0.82);
+  border: 1px solid color-mix(in srgb, var(--pc, #8b5cf6) 55%, transparent);
+  border-radius: 40px;
+  padding: 8px 14px 8px 10px;
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 0 16px color-mix(in srgb, var(--pc, #8b5cf6) 28%, transparent),
+    0 2px 20px rgba(0, 0, 0, 0.65);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+  max-width: 200px;
+  position: relative;
+}
+
+.obs-planet:hover {
+  transform: translate(-50%, -50%) scale(1.07);
+  box-shadow:
+    0 0 26px color-mix(in srgb, var(--pc, #8b5cf6) 50%, transparent),
+    0 4px 28px rgba(0, 0, 0, 0.75);
+  border-color: var(--pc, #8b5cf6);
+}
+
+.obs-planet--active {
+  transform: translate(-50%, -50%) scale(1.09);
+  border-color: var(--pc, #8b5cf6);
+  box-shadow:
+    0 0 32px color-mix(in srgb, var(--pc, #8b5cf6) 60%, transparent),
+    0 4px 32px rgba(0, 0, 0, 0.8);
+}
+
+.obs-planet-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.obs-planet-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.obs-planet-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
+}
+
+.obs-planet-desc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
+}
+
+.obs-planet-date {
+  font-size: 10px;
+  color: color-mix(in srgb, var(--pc, #94a3b8) 90%, white);
+  opacity: 0.88;
+  line-height: 1.4;
+}
+
+/* Planet popup */
+.obs-planet-popup {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(8, 3, 20, 0.96);
+  border: 1px solid var(--pc, #8b5cf6);
+  border-radius: 14px;
+  padding: 12px 14px;
+  min-width: 180px;
+  z-index: 20;
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 4px 36px rgba(0, 0, 0, 0.75),
+    0 0 20px color-mix(in srgb, var(--pc, #8b5cf6) 22%, transparent);
+  animation: fadeIn 0.15s ease;
+  white-space: normal;
+}
+
+.obs-planet-popup-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f1f5f9;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.obs-planet-popup-desc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.obs-planet-popup-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.obs-planet-popup-btn {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.obs-planet-popup-btn:hover {
+  opacity: 0.82;
+  transform: scale(1.04);
+}
+
+.obs-planet-popup-btn--check {
+  background: rgba(139, 92, 246, 0.22);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.42);
+}
+
+.obs-planet-popup-btn--del {
+  flex: 0;
+  padding: 6px 12px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.32);
+}
+
+/* ── Empty state ──────────────────────────────── */
+.obs-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 110px);
+  text-align: center;
+  color: rgba(255, 255, 255, 0.28);
+  pointer-events: none;
+  width: 240px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ── Mic button area ──────────────────────────── */
+.obs-mic-area {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 30px;
+}
+
+.obs-mic-btn {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #4338ca, #7c3aed);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow:
+    0 0 28px rgba(109, 40, 217, 0.55),
+    0 4px 18px rgba(0, 0, 0, 0.45);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.obs-mic-btn:hover  { transform: scale(1.08); }
+.obs-mic-btn:active { transform: scale(0.94); }
+
+.obs-mic-btn--recording {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  box-shadow:
+    0 0 28px rgba(239, 68, 68, 0.65),
+    0 4px 18px rgba(0, 0, 0, 0.45);
+  animation: obs-mic-pulse 1s ease-in-out infinite;
+}
+
+@keyframes obs-mic-pulse {
+  0%, 100% {
+    box-shadow: 0 0 28px rgba(239, 68, 68, 0.65), 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 36px rgba(239, 68, 68, 0.85), 0 0 0 14px rgba(239, 68, 68, 0);
+  }
+}
+
+.obs-mic-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+/* ── Task modal (centered overlay) ───────────── */
+.obs-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.18s ease;
+}
+
+.obs-modal {
+  background: rgba(10, 4, 26, 0.97);
+  border: 1px solid var(--pc, #8b5cf6);
+  border-radius: 22px;
+  padding: 26px 24px 22px;
+  width: 340px;
+  max-width: calc(100vw - 40px);
+  box-shadow:
+    0 0 60px color-mix(in srgb, var(--pc, #8b5cf6) 30%, transparent),
+    0 20px 60px rgba(0, 0, 0, 0.85);
+  animation: fadeIn 0.2s ease;
+}
+
+.obs-modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.obs-modal-icon {
+  font-size: 30px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.obs-modal-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.obs-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f1f5f9;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.obs-modal-date {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--pc, #94a3b8) 90%, white);
+  margin-top: 4px;
+  opacity: 0.9;
+}
+
+.obs-modal-close {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  font-size: 20px;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.obs-modal-close:hover { color: rgba(255, 255, 255, 0.7); }
+
+.obs-modal-desc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.55;
+  margin-bottom: 22px;
+  padding-top: 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 14px;
+}
+
+.obs-modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.obs-modal-btn {
+  flex: 1;
+  padding: 13px 16px;
+  border-radius: 14px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.12s;
+}
+
+.obs-modal-btn:hover  { opacity: 0.85; transform: scale(1.02); }
+.obs-modal-btn:active { transform: scale(0.97); }
+
+.obs-modal-btn--check {
+  background: rgba(139, 92, 246, 0.22);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.5);
+}
+
+.obs-modal-btn--del {
+  flex: 0;
+  padding: 13px 20px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 700px) {
+  .obs-topbar-title { font-size: 17px; }
+  .obs-mascot-star  { font-size: 90px; }
+}

@@ -1,0 +1,27 @@
+# Environment
+.env
+backend/.env
+.venv/
+backend/.venv/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Databases
+*.db
+tasks.db
+
+# Temporary audio/files
+backend/app/temp_audio/*
+!backend/app/temp_audio/.gitkeep
+backend/*.mp3
+backend/*.wav
+backend/voice_response.mp3
+backend/voice_headers.txt
+
+# Test files
+backend/task-test.json
+backend/task-test-2.json
+
