@@ -27,6 +27,12 @@ from app.core.evaluation_metrics import (
     voice_tts_duration_seconds,
 )
 
+from app.core.logger import logger
+
+from app.services.audio_preprocessing_service import (
+    AudioPreprocessingService
+)
+
 class VoicePipeline:
 
     @staticmethod
@@ -39,24 +45,36 @@ class VoicePipeline:
         stage = "initialization"
 
         try:
-            print("1. Iniciando transcripción")
+            logger.info("VOICE MODULE: 1. Iniciando transcripción:")
+            #print("1. Iniciando transcripción")
 
             stage = "transcription"
             transcription_start = time.perf_counter()
 
             try:
-                transcript = await STTService.transcribe_audio(audio_path)
+                # Preprocesar audio
+                processed_audio_path = (
+                    await AudioPreprocessingService.reduce_noise(
+                        audio_path
+                    )
+                )
+
+                # Transcribir audio limpio
+                transcript = await STTService.transcribe_audio(
+                    processed_audio_path
+                )
             finally:
                 transcription_time = time.perf_counter() - transcription_start
                 voice_transcription_duration_seconds.observe(transcription_time)
 
+            logger.info("VOICE MODULE: 2. Transcripción completada:")
+            #print("2. Transcripción completada")
+            #print("========== TRANSCRIPT ==========")
+            #print(transcript)
+            #print("================================")
 
-            print("2. Transcripción completada")
-            print("========== TRANSCRIPT ==========")
-            print(transcript)
-            print("================================")
-
-            print("3. Enviando texto a Gemini")
+            logger.info("VOICE MODULE: 3. Enviando texto a Gemini:")
+            #print("3. Enviando texto a Gemini")
 
             stage = "conversation"
 
@@ -66,8 +84,9 @@ class VoicePipeline:
                 transcript
             )
 
-            print("4. Gemini respondió")
-            print(ai_response)
+            logger.info("VOICE MODULE: 4. Gemini respondió:")
+            #print("4. Gemini respondió")
+            #print(ai_response)
 
           
             usage = ai_response.get("usage") or ai_response.get("usage_metadata") or {}
@@ -119,7 +138,8 @@ class VoicePipeline:
                 "Done."
             )
 
-            print("5. Generando audio TTS")
+            logger.info("VOICE MODULE: 5. Generando audio TTS:")
+            #print("5. Generando audio TTS")
 
             stage = "tts"
             tts_start = time.perf_counter()
@@ -131,7 +151,8 @@ class VoicePipeline:
             tts_time = time.perf_counter() - tts_start
             voice_tts_duration_seconds.observe(tts_time)
 
-            print("6. Audio generado")
+            logger.info("VOICE MODULE: 6. Audio generado:")
+            #print("6. Audio generado")
 
             total_time = time.perf_counter() - total_start
             voice_pipeline_duration_seconds.observe(total_time)

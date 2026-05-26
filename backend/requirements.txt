@@ -36,3 +36,13 @@ slowapi==0.1.9
 redis==5.0.8
 
 pytest-asyncio==0.24.0
+
+noisereduce
+
+librosa
+
+soundfile
+
+numpy
+
+scipy

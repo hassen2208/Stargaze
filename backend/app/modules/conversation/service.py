@@ -34,6 +34,8 @@ from app.core.metrics import (
     LLM_REQUEST_COUNT
 )
 
+from app.core.logger import logger
+
 class ConversationService:
     @staticmethod
     def _get_response_text(raw_response):
@@ -171,6 +173,8 @@ class ConversationService:
 
         start_time = time.time()
 
+        logger.info("CONVERSATION MODULE: Se creó el Prompt exitósamente.")
+        
         print("ESTE ES EL PROMPT:")
         print(full_prompt)
 
@@ -178,6 +182,8 @@ class ConversationService:
             full_prompt
         )
         llm_text = ConversationService._get_response_text(raw_response)
+
+        logger.info("CONVERSATION MODULE: Se obtuvo una respuesta del LLM.")
 
         usage = ConversationService._extract_usage(raw_response)
 
@@ -224,6 +230,10 @@ class ConversationService:
         parsed_response = parse_llm_json(
             llm_text
         )
+
+        logger.info("CONVERSATION MODULE: Se parseó la respuesta del LLM.")
+
+        logger.info("CONVERSATION MODULE: Conversación terminada con el LLM.")
 
         execution_result = await AIOrchestrator.execute_intent(
             db,
