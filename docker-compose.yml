@@ -1,6 +1,7 @@
-version: "3.9"
+
 
 services:
+
   backend:
     build: ./backend
     container_name: stargaze_backend
