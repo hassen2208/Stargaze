@@ -1,43 +1,98 @@
-import { useState, useEffect } from "react";
-import { apiFetch } from "../services/api";
+import { useState, useEffect, useCallback } from "react";
+import { metricsApi } from "../services/api";
 
-function useRecibirDatos(){
-     const [metricas, setMetricas] = useState({
+function useRecibirDatos() {
+
+    const [metricas, setMetricas] = useState({
+
         total_requests: 0,
+        llm_requests: 0,
+
         total_tokens: 0,
         total_cost_usd: 0,
-        avg_tokens: 0,
-        avg_cost: 0,
-        avg_response_time: 0,
-        error_rate: 0,
-        hallucinations_detected: 0,
-        monthly_cost_projection: []
-  });
 
-  const loadMetricas = async () => {
-    const data = await apiFetch("/api/metricas",{
-        headers: {
-            Authorization: `Bearer ${"token"}`
-        }
+        conversation_errors: 0,
+
+        recognition_accuracy: 0,
+
+        voice_pipeline_seconds: 0,
+        voice_transcription_seconds: 0,
+        voice_tts_seconds: 0,
     });
-    console.log("Datos métricas recibidos:", data);
-    setMetricas({
-        total_requests: data.total_requests,
-        total_tokens: data.total_tokens,
-        total_cost_usd: data.total_cost_usd,
-        avg_tokens: data.avg_tokens,
-        avg_cost: data.avg_cost,
-        avg_response_time: data.avg_response_time,
-        error_rate: data.error_rate,
-        hallucinations_detected: data.hallucinations_detected,
-        monthly_cost_projection: data.monthly_cost_projection
-    }
-        );
-            };
-    useEffect(() => {    
+
+    const [loading, setLoading] = useState(false);
+
+    const [error, setError] = useState(null);
+
+    const loadMetricas = useCallback(async () => {
+
+        try {
+
+            setLoading(true);
+            setError(null);
+
+            const token = localStorage.getItem("token");
+
+            const data = await metricsApi.dashboard();
+
+            console.log("Métricas:", data);
+
+            setMetricas({
+
+                total_requests:
+                    data?.total_requests ?? 0,
+
+                llm_requests:
+                    data?.llm_requests ?? 0,
+
+                total_tokens:
+                    data?.total_tokens ?? 0,
+
+                total_cost_usd:
+                    data?.total_cost_usd ?? 0,
+
+                conversation_errors:
+                    data?.conversation_errors ?? 0,
+
+                recognition_accuracy:
+                    data?.recognition_accuracy ?? 0,
+
+                voice_pipeline_seconds:
+                    data?.voice_pipeline_seconds ?? 0,
+
+                voice_transcription_seconds:
+                    data?.voice_transcription_seconds ?? 0,
+
+                voice_tts_seconds:
+                    data?.voice_tts_seconds ?? 0,
+            });
+
+        } catch (err) {
+
+            console.error("Error cargando métricas:", err);
+            setError(err);
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    }, []);
+
+    useEffect(() => {
+
         loadMetricas();
-        }, []);
-    return {metricas, loadMetricas};
+
+    }, [loadMetricas]);
+
+    return {
+
+        metricas,
+        loading,
+        error,
+        reloadMetricas: loadMetricas
+    };
 }
 
 export default useRecibirDatos;

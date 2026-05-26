@@ -21,6 +21,7 @@ function App() {
           <Route index element={<Navigate to="observatorio" replace />} />
           <Route path="observatorio" element={<Observatorio />} />
           <Route path="universo" element={<Universo />} />
+          <Route path="metricas" element={<Metricas />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
