@@ -31,6 +31,7 @@ from app.modules.tasks.service import (
 from app.core.evaluation_metrics import (
     api_cost_usd_total,
     llm_tokens_total,
+    llm_requests_total,
 )
 
 from app.core.metrics import (
@@ -257,7 +258,7 @@ class ConversationService:
         {tasks_json}
         """
 
-        LLM_REQUEST_COUNT.inc()
+        llm_requests_total.inc()
 
         start_time = time.time()
 
