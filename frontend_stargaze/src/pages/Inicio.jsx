@@ -1,6 +1,6 @@
 import {React, useState} from "react";
 import ImagenInicio from '../assets/imagenes/InicioPrincipal.png';
-import './App.css';
+import './AppLR.css';
 import { motion } from "framer-motion";
 import { useNavigate } from 'react-router-dom';
 

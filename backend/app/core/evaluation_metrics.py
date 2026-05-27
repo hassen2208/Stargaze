@@ -1,4 +1,4 @@
-from prometheus_client import Counter, Gauge, Histogram
+from prometheus_client import Counter, Histogram
 
 
 voice_pipeline_duration_seconds = Histogram(
@@ -40,7 +40,7 @@ api_cost_usd_total = Counter(
     ["provider"],
 )
 
-perceived_recognition_accuracy = Gauge(
-    "perceived_recognition_accuracy",
-    "Precisión percibida del reconocimiento de voz, valor entre 0 y 1",
+llm_requests_total = Counter(
+    "llm_requests_total",
+    "Cantidad de solicitudes al modelo LLM",
 )

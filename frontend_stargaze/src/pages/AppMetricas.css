@@ -1,0 +1,404 @@
+:root {
+    --space-card: rgba(14, 20, 46, 0.74);
+    --space-card-hover: rgba(28, 35, 76, 0.88);
+
+    --star-white: #f7f8ff;
+    --star-muted: rgba(230, 235, 255, 0.62);
+
+    --nebula-purple: #8b5cf6;
+    --nebula-blue: #38bdf8;
+    --nebula-pink: #ec4899;
+    --nebula-cyan: #22d3ee;
+
+    --border-soft: rgba(255, 255, 255, 0.12);
+    --shadow-deep: 0 24px 80px rgba(0, 0, 0, 0.42);
+}
+
+/* Fondo atmosférico del dashboard */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 18% 20%, rgba(139, 92, 246, 0.22), transparent 28%),
+        radial-gradient(circle at 78% 12%, rgba(56, 189, 248, 0.14), transparent 24%),
+        radial-gradient(circle at 88% 78%, rgba(236, 72, 153, 0.14), transparent 30%),
+        linear-gradient(180deg, rgba(2, 6, 23, 0.08), rgba(2, 6, 23, 0.68));
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.22;
+    background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.75) 1px, transparent 1px),
+        radial-gradient(circle, rgba(139, 92, 246, 0.55) 1px, transparent 1px);
+    background-size: 80px 80px, 140px 140px;
+    background-position: 0 0, 42px 52px;
+    animation: starDrift 38s linear infinite;
+}
+
+@keyframes starDrift {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+
+    to {
+        transform: translate3d(-70px, 50px, 0);
+    }
+}
+
+/* Título */
+.metrics-title {
+    position: relative;
+    z-index: 2;
+
+    color: var(--star-white);
+    text-align: center;
+
+    margin-top: 26px;
+    margin-bottom: 18px;
+
+    font-size: clamp(2rem, 3vw, 3.1rem);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+
+    text-shadow:
+        0 0 18px rgba(139, 92, 246, 0.5),
+        0 0 38px rgba(56, 189, 248, 0.2);
+}
+
+.metrics-title::after {
+    content: "";
+    display: block;
+
+    width: 128px;
+    height: 3px;
+
+    margin: 16px auto 0;
+
+    border-radius: 999px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--nebula-blue),
+        var(--nebula-purple),
+        transparent
+    );
+
+    box-shadow:
+        0 0 18px rgba(56, 189, 248, 0.6),
+        0 0 28px rgba(139, 92, 246, 0.45);
+}
+
+/* Grid principal */
+.stats {
+    position: relative;
+    z-index: 2;
+
+    display: grid;
+    grid-template-columns: repeat(5, minmax(190px, 1fr));
+    gap: 28px;
+
+    width: min(82vw, 1500px);
+
+    margin: 72px auto 0;
+    padding: 0 24px 70px;
+}
+
+/* Tarjetas */
+.stat-card {
+    position: relative;
+    overflow: hidden;
+
+    min-height: 145px;
+
+    padding: 30px 24px;
+
+    color: var(--star-white);
+    text-align: center;
+
+    border: 1px solid var(--border-soft);
+    border-radius: 26px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.09),
+            rgba(255, 255, 255, 0.025)
+        ),
+        var(--space-card);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        var(--shadow-deep),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    transition:
+        transform 260ms ease,
+        border-color 260ms ease,
+        box-shadow 260ms ease,
+        background 260ms ease;
+}
+
+/* Nebulosa interna */
+.stat-card::before {
+    content: "";
+
+    position: absolute;
+    inset: -2px;
+
+    opacity: 0;
+    pointer-events: none;
+
+    background:
+        radial-gradient(circle at 18% 18%, rgba(56, 189, 248, 0.34), transparent 28%),
+        radial-gradient(circle at 82% 4%, rgba(139, 92, 246, 0.36), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(236, 72, 153, 0.18), transparent 34%);
+
+    transition: opacity 260ms ease;
+}
+
+/* Barrido de luz */
+.stat-card::after {
+    content: "";
+
+    position: absolute;
+    top: -120%;
+    left: -70%;
+
+    width: 55%;
+    height: 260%;
+
+    opacity: 0;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.18),
+        transparent
+    );
+
+    transform: rotate(28deg);
+
+    transition:
+        left 520ms ease,
+        opacity 220ms ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px) scale(1.018);
+
+    border-color: rgba(139, 92, 246, 0.62);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.13),
+            rgba(255, 255, 255, 0.035)
+        ),
+        var(--space-card-hover);
+
+    box-shadow:
+        0 28px 90px rgba(0, 0, 0, 0.52),
+        0 0 44px rgba(139, 92, 246, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.13);
+}
+
+.stat-card:hover::before {
+    opacity: 1;
+}
+
+.stat-card:hover::after {
+    left: 120%;
+    opacity: 1;
+}
+
+/* Texto de tarjetas */
+.stat-card p {
+    position: relative;
+    z-index: 1;
+
+    margin: 0 0 18px;
+
+    color: var(--star-muted);
+
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+}
+
+.stat-card h2 {
+    position: relative;
+    z-index: 1;
+
+    margin: 0;
+
+    color: var(--star-white);
+
+    font-size: clamp(2rem, 2.4vw, 3rem);
+    font-weight: 850;
+    letter-spacing: -0.035em;
+
+    text-shadow:
+        0 0 18px rgba(255, 255, 255, 0.14),
+        0 0 28px rgba(139, 92, 246, 0.24);
+}
+
+/* Acentos por métrica */
+.stat-card:nth-child(1) {
+    border-color: rgba(56, 189, 248, 0.22);
+}
+
+.stat-card:nth-child(1) h2 {
+    color: #dff7ff;
+}
+
+.stat-card:nth-child(2) {
+    border-color: rgba(139, 92, 246, 0.26);
+}
+
+.stat-card:nth-child(2) h2 {
+    color: #eee7ff;
+}
+
+.stat-card:nth-child(3) {
+    border-color: rgba(34, 211, 238, 0.22);
+}
+
+.stat-card:nth-child(3) h2 {
+    color: #ddfbff;
+}
+
+.stat-card:nth-child(4) {
+    border-color: rgba(236, 72, 153, 0.22);
+}
+
+.stat-card:nth-child(4) h2 {
+    color: #ffe5f3;
+}
+
+.stat-card:nth-child(5) {
+    border-color: rgba(248, 113, 113, 0.22);
+}
+
+.stat-card:nth-child(5) h2 {
+    color: #ffe4e4;
+}
+
+.stat-card:nth-child(6),
+.stat-card:nth-child(7),
+.stat-card:nth-child(8) {
+    min-height: 135px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(139, 92, 246, 0.13),
+            rgba(56, 189, 248, 0.045)
+        ),
+        rgba(9, 14, 36, 0.78);
+}
+
+/* Estados */
+.metrics-loading,
+.metrics-error {
+    position: relative;
+    z-index: 2;
+
+    width: fit-content;
+
+    margin: 120px auto 0;
+    padding: 18px 28px;
+
+    color: var(--star-white);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 18px;
+
+    background: rgba(12, 18, 42, 0.72);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow: 0 0 35px rgba(139, 92, 246, 0.22);
+}
+
+.metrics-error {
+    color: #fecaca;
+    border-color: rgba(248, 113, 113, 0.38);
+}
+
+/* Responsive */
+@media (max-width: 1500px) {
+    .stats {
+        grid-template-columns: repeat(4, minmax(190px, 1fr));
+        width: min(86vw, 1280px);
+    }
+}
+
+@media (max-width: 1180px) {
+    .stats {
+        grid-template-columns: repeat(3, minmax(190px, 1fr));
+        margin-top: 52px;
+    }
+}
+
+@media (max-width: 850px) {
+    .stats {
+        grid-template-columns: repeat(2, minmax(170px, 1fr));
+        gap: 20px;
+        width: min(92vw, 700px);
+        padding: 0 14px 56px;
+    }
+
+    .stat-card {
+        min-height: 132px;
+        padding: 24px 18px;
+        border-radius: 22px;
+    }
+
+    .metrics-title {
+        margin-top: 24px;
+    }
+}
+
+@media (max-width: 560px) {
+    .stats {
+        grid-template-columns: 1fr;
+        margin-top: 40px;
+    }
+
+    .stat-card {
+        min-height: 120px;
+    }
+
+    .stat-card p {
+        font-size: 0.82rem;
+    }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    body::after,
+    .stat-card,
+    .stat-card::after {
+        animation: none;
+        transition: none;
+    }
+
+    .stat-card:hover {
+        transform: none;
+    }
+}

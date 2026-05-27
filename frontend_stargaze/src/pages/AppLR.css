@@ -1,0 +1,35 @@
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background:  rgb(36, 48, 105);
+  border-radius: 10px;
+  padding: 20px;
+  width: 250px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.05);
+}
+
+.stat-card p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.stat-card h2 {
+  margin-top: 10px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+
+.chart-card {
+  background: rgb(36, 48, 105);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.05);
+  
+}
