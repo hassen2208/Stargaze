@@ -4,9 +4,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-
 from app.services.firebase_service import FirebaseService
-
 from app.modules.auth.service import AuthService
 
 security = HTTPBearer()
@@ -16,9 +14,7 @@ def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
 ):
-
     try:
-
         token = credentials.credentials
 
         decoded_token = FirebaseService.verify_token(token)
@@ -30,7 +26,9 @@ def get_current_user(
 
         return user
 
-    except Exception:
+    except Exception as error:
+        print("AUTH ERROR TYPE:", type(error).__name__)
+        print("AUTH ERROR MESSAGE:", str(error))
 
         raise HTTPException(
             status_code=401,

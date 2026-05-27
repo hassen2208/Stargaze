@@ -1,13 +1,22 @@
+from fileinput import filename
 import os
 import traceback
 
-from fastapi import APIRouter, UploadFile, File, Depends
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    File,
+    HTTPException,
+    UploadFile,
+)
+
 from fastapi.responses import FileResponse
-from fastapi.background import BackgroundTasks
+
 from sqlalchemy.orm import Session
 
-from app.core.database import get_db
 from app.api.dependencies import get_current_user
+from app.core.database import get_db
 from app.modules.voice.controller import VoiceController
 from app.utils.audio_utils import generate_audio_filename
 
@@ -15,62 +24,85 @@ from app.utils.audio_utils import generate_audio_filename
 router = APIRouter()
 
 
+@router.get("/health")
+def voice_health():
+    return {
+        "module": "voice",
+        "status": "ok"
+    }
+
+
 @router.post("/process")
 async def process_voice(
     background_tasks: BackgroundTasks,
     audio: UploadFile = File(...),
     db: Session = Depends(get_db),
-
-    current_user=Depends(get_current_user),
+    current_user = Depends(get_current_user)
 ):
     try:
         print("1. Endpoint iniciado")
 
-        extension = audio.filename.split(".")[-1]
+        filename = audio.filename or "recording.webm"
+
+        extension = (
+        filename.rsplit(".", 1)[-1]
+        if "." in filename
+        else "webm"
+)
+
         print(f"2. Extension detectada: {extension}")
 
-        file_path = generate_audio_filename(extension)
+        file_path = generate_audio_filename(
+            extension
+        )
+
         print(f"3. Ruta generada: {file_path}")
 
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        content = await audio.read()
+
+        print(f"4. Audio leído: {len(content)} bytes")
 
         with open(file_path, "wb") as buffer:
-            content = await audio.read()
-            print(f"4. Audio leído: {len(content)} bytes")
-
             buffer.write(content)
 
         print("5. Audio guardado")
 
-        result = await VoiceController.process_voice(db, current_user.id, file_path)
-        print("6. VoiceController terminó")
+        result = await VoiceController.process_voice(
+            db,
+            current_user.id,
+            file_path
+        )
+
+        print("VoiceController terminó")
 
         generated_audio_path = result["audio"]
-        background_tasks.add_task(os.remove, generated_audio_path)
 
-        # Extract intent from the orchestrator response
-        response = result.get("response", {})
-        intent = response.get("intent", "") if isinstance(response, dict) else ""
+        if not os.path.exists(generated_audio_path):
+            raise FileNotFoundError(
+                f"Generated audio not found: {generated_audio_path}"
+            )
 
+        background_tasks.add_task(
+            os.remove,
+            generated_audio_path
+        )
 
         return FileResponse(
             path=generated_audio_path,
             media_type="audio/mpeg",
+            filename="response.mp3",
             headers={
-                "X-Transcript": str(result.get("transcript", "")),
-                "X-Intent":     intent,
-            },
+                "X-Transcript": result.get("transcript", "")
+            }
         )
 
-    except Exception as e:
+    except Exception as error:
         print("ERROR EN /voice/process")
-        print(str(e))
+        print("ERROR TYPE:", type(error).__name__)
+        print("ERROR MESSAGE:", str(error))
         traceback.print_exc()
 
-        raise e
-
-
-@router.get("/health")
-def voice_health():
-    return {"module": "voice", "status": "ok"}
-
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
+        )

@@ -1,9 +1,11 @@
-import time
-import os
 import json
+import os
+import re
+import time
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from google.api_core.exceptions import ResourceExhausted
 from sqlalchemy.orm import Session
 
 from app.services.gemini_service import GeminiService
@@ -25,6 +27,7 @@ from app.modules.conversation.orchestrator import (
 from app.modules.tasks.service import (
     TaskService
 )
+
 from app.core.evaluation_metrics import (
     api_cost_usd_total,
     llm_tokens_total,
@@ -34,7 +37,9 @@ from app.core.metrics import (
     LLM_REQUEST_COUNT
 )
 
+
 class ConversationService:
+
     @staticmethod
     def _get_response_text(raw_response):
         if hasattr(raw_response, "text"):
@@ -51,7 +56,11 @@ class ConversationService:
 
     @staticmethod
     def _extract_usage(raw_response):
-        usage_metadata = getattr(raw_response, "usage_metadata", None)
+        usage_metadata = getattr(
+            raw_response,
+            "usage_metadata",
+            None
+        )
 
         if usage_metadata is None and isinstance(raw_response, dict):
             usage_metadata = (
@@ -104,20 +113,103 @@ class ConversationService:
     @staticmethod
     def _estimate_gemini_cost(usage):
         input_price_per_1m = float(
-            os.getenv("GEMINI_INPUT_COST_PER_1M_TOKENS_USD", "0.075")
+            os.getenv(
+                "GEMINI_INPUT_COST_PER_1M_TOKENS_USD",
+                "0.075"
+            )
         )
 
         output_price_per_1m = float(
-            os.getenv("GEMINI_OUTPUT_COST_PER_1M_TOKENS_USD", "0.30")
+            os.getenv(
+                "GEMINI_OUTPUT_COST_PER_1M_TOKENS_USD",
+                "0.30"
+            )
         )
 
         prompt_tokens = usage.get("prompt_token_count", 0)
         completion_tokens = usage.get("candidates_token_count", 0)
 
-        input_cost = (prompt_tokens / 1_000_000) * input_price_per_1m
-        output_cost = (completion_tokens / 1_000_000) * output_price_per_1m
+        input_cost = (
+            prompt_tokens / 1_000_000
+        ) * input_price_per_1m
+
+        output_cost = (
+            completion_tokens / 1_000_000
+        ) * output_price_per_1m
 
         return input_cost + output_cost
+
+    @staticmethod
+    def _build_quota_fallback_response(
+        message: str,
+        today: str
+    ):
+        today_date = datetime.strptime(
+            today,
+            "%Y-%m-%d"
+        ).date()
+
+        lower_message = message.lower()
+
+        priority = "medium"
+
+        if (
+            "urgente" in lower_message
+            or "prioridad alta" in lower_message
+            or "alta prioridad" in lower_message
+        ):
+            priority = "high"
+
+        if (
+            "prioridad baja" in lower_message
+            or "baja prioridad" in lower_message
+        ):
+            priority = "low"
+
+        due_date = None
+
+        if "mañana" in lower_message or "manana" in lower_message:
+            due_date = (
+                today_date + timedelta(days=1)
+            ).isoformat()
+
+        elif "hoy" in lower_message:
+            due_date = today_date.isoformat()
+
+        title = message.strip()
+
+        title = re.sub(
+            r"\b(crear|crea|agregar|añadir|anadir)\s+(una\s+)?tarea\b",
+            "",
+            title,
+            flags=re.IGNORECASE
+        )
+
+        title = re.sub(
+            r"\b(mañana|manana|hoy|urgente|prioridad alta|alta prioridad|prioridad baja|baja prioridad)\b",
+            "",
+            title,
+            flags=re.IGNORECASE
+        )
+
+        title = " ".join(title.split()).strip(" .,:;")
+
+        if not title:
+            title = message.strip()
+
+        return {
+            "intent": "create_task",
+            "task_id": None,
+            "task": {
+                "title": title,
+                "description": None,
+                "priority": priority,
+                "status": "pending",
+                "date": due_date,
+                "time": None
+            },
+            "response": f'He creado la tarea "{title}".'
+        }
 
     @staticmethod
     async def process_message(
@@ -125,7 +217,6 @@ class ConversationService:
         user_id: int,
         message: str
     ):
-        
         today = datetime.now().strftime("%Y-%m-%d")
 
         system_prompt = load_task_prompt()
@@ -138,7 +229,6 @@ class ConversationService:
         formatted_tasks = []
 
         for task in tasks:
-
             formatted_tasks.append({
                 "id": task.id,
                 "title": task.title,
@@ -147,11 +237,11 @@ class ConversationService:
                 "priority": task.priority,
                 "due_date": str(task.due_date)
             })
-        
+
         tasks_json = json.dumps(
-        formatted_tasks,
-        ensure_ascii=False,
-        indent=2
+            formatted_tasks,
+            ensure_ascii=False,
+            indent=2
         )
 
         full_prompt = f"""
@@ -160,7 +250,7 @@ class ConversationService:
         User message:
         {message}
 
-        Today date is: 
+        Today date is:
         {today}
 
         Current user tasks:
@@ -174,16 +264,45 @@ class ConversationService:
         print("ESTE ES EL PROMPT:")
         print(full_prompt)
 
-        raw_response = await GeminiService.generate_response(
-            full_prompt
-        )
-        llm_text = ConversationService._get_response_text(raw_response)
+        try:
+            raw_response = await GeminiService.generate_response(
+                full_prompt
+            )
 
-        usage = ConversationService._extract_usage(raw_response)
+            llm_text = ConversationService._get_response_text(
+                raw_response
+            )
 
-        print("========== DEBUG USAGE ==========")
-        print(usage)
-        print("=================================")
+            usage = ConversationService._extract_usage(
+                raw_response
+            )
+
+            print("RESPUESTA DEL LLM:")
+            print(llm_text)
+
+        except ResourceExhausted as error:
+            print("GEMINI QUOTA EXCEEDED")
+            print("ERROR TYPE:", type(error).__name__)
+            print("ERROR MESSAGE:", str(error))
+
+            fallback_response = ConversationService._build_quota_fallback_response(
+                message,
+                today
+            )
+
+            llm_text = json.dumps(
+                fallback_response,
+                ensure_ascii=False
+            )
+
+            usage = {
+                "prompt_token_count": 0,
+                "candidates_token_count": 0,
+                "total_token_count": 0
+            }
+
+            print("USANDO FALLBACK LOCAL:")
+            print(llm_text)
 
         prompt_tokens = usage.get("prompt_token_count", 0)
         completion_tokens = usage.get("candidates_token_count", 0)
@@ -198,26 +317,14 @@ class ConversationService:
         if total_tokens:
             llm_tokens_total.labels(type="total").inc(total_tokens)
 
-        estimated_cost = ConversationService._estimate_gemini_cost(usage)
+        estimated_cost = ConversationService._estimate_gemini_cost(
+            usage
+        )
 
         if estimated_cost:
-            api_cost_usd_total.labels(provider="gemini").inc(estimated_cost)
-
-        print("PROMPT TOKENS:", prompt_tokens)
-        print("COMPLETION TOKENS:", completion_tokens)
-        print("TOTAL TOKENS:", total_tokens)
-        print("ESTIMATED COST:", estimated_cost)
-        print("MÉTRICAS LLM INCREMENTADAS")
-            
-
-        # 1. ¿Qué tipo de objeto es? (Te dirá la clase exacta)
-        print("TIPO DE OBJETO:", type(raw_response))
-
-        # 2. ¿Qué herramientas/atributos tiene dentro?
-        print("ATRIBUTOS DISPONIBLES:", dir(raw_response))
-
-        print("RESPUESTA DEL LLM:")
-        print(llm_text)
+            api_cost_usd_total.labels(provider="gemini").inc(
+                estimated_cost
+            )
 
         latency = time.time() - start_time
 
@@ -230,6 +337,7 @@ class ConversationService:
             user_id,
             parsed_response
         )
+
         if isinstance(execution_result, dict):
             execution_result["usage"] = usage
             execution_result["estimated_cost_usd"] = estimated_cost
@@ -243,7 +351,6 @@ class ConversationService:
         )
 
         db.add(conversation)
-
         db.commit()
 
         return execution_result

@@ -5,7 +5,6 @@ import ImagenMetricas from "../assets/imagenes/fondoMetricas.png";
 import useRecibirDatos from "../hooks/useRecibirDatos";
 
 function Metricas() {
-
     const {
         metricas,
         loading,
@@ -13,19 +12,15 @@ function Metricas() {
     } = useRecibirDatos();
 
     if (loading) {
-
         return <p>Cargando métricas...</p>;
     }
 
     if (error) {
-
         return <p>Error cargando métricas</p>;
     }
 
     return (
-
         <div>
-
             <img
                 src={ImagenMetricas}
                 alt="Fondo"
@@ -45,7 +40,6 @@ function Metricas() {
             </h3>
 
             <div className="stats">
-
                 <div className="stat-card">
                     <p>Total Requests</p>
                     <h2>{metricas.total_requests}</h2>
@@ -64,7 +58,7 @@ function Metricas() {
                 <div className="stat-card">
                     <p>Total Cost USD</p>
                     <h2>
-                        ${metricas.total_cost_usd.toFixed(4)}
+                        ${Number(metricas.total_cost_usd || 0).toFixed(4)}
                     </h2>
                 </div>
 
@@ -76,26 +70,24 @@ function Metricas() {
                 <div className="stat-card">
                     <p>Voice Pipeline</p>
                     <h2>
-                        {metricas.voice_pipeline_seconds.toFixed(2)}s
+                        {Number(metricas.voice_pipeline_seconds || 0).toFixed(2)}s
                     </h2>
                 </div>
 
                 <div className="stat-card">
                     <p>Transcription Time</p>
                     <h2>
-                        {metricas.voice_transcription_seconds.toFixed(2)}s
+                        {Number(metricas.voice_transcription_seconds || 0).toFixed(2)}s
                     </h2>
                 </div>
 
                 <div className="stat-card">
                     <p>TTS Time</p>
                     <h2>
-                        {metricas.voice_tts_seconds.toFixed(2)}s
+                        {Number(metricas.voice_tts_seconds || 0).toFixed(2)}s
                     </h2>
                 </div>
-
             </div>
-
         </div>
     );
 }
