@@ -1,9 +1,14 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/config";
 
-const BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8002";
+const RAW_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8002";
+const BASE = RAW_BASE.replace(/\/$/, "");
 
 let _token = "";
+
+export function setAuthToken(token) {
+  _token = token;
+}
 
 export function setAuthToken(token) {
   _token = token;
