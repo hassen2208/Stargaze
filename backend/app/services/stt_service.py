@@ -28,6 +28,10 @@ class STTService:
         fallback_enabled = settings.STT_FALLBACK_ENABLED
         fallback_text = settings.STT_FALLBACK_TEXT
 
+        print("STT_FALLBACK_ENABLED:", fallback_enabled)
+        print("STT_FALLBACK_TEXT:", fallback_text)
+        print("DEEPGRAM_MAX_RETRIES:", max_retries)
+
         last_error: Exception | None = None
 
         for attempt in range(max_retries + 1):
@@ -88,6 +92,13 @@ class STTService:
                 ).strip()
 
                 if not transcript:
+                    if fallback_enabled:
+                        logger.warning(
+                            "Deepgram returned empty transcript. Using STT fallback."
+                        )
+
+                        return fallback_text
+
                     raise ValueError(
                         "Deepgram returned an empty transcript."
                     )
