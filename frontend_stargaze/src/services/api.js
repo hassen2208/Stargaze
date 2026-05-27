@@ -10,9 +10,6 @@ export function setAuthToken(token) {
   _token = token;
 }
 
-export function setAuthToken(token) {
-  _token = token;
-}
 
 function waitForFirebaseUser() {
   return new Promise((resolve) => {
